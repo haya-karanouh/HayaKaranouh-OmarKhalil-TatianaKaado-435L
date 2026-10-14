@@ -78,3 +78,14 @@ class ThreatsService:
             column = getattr(Threat, field)
             query = query.filter(column.contains(value, autoescape=True) if field == "threat_value" else column == value)
         return [self.serialize(row) for row in query.order_by(Threat.id).all()]
+
+    @staticmethod
+    def find(threat_id):
+        from common.errors import NotFoundError
+        row = db.session.get(Threat, threat_id)
+        if row is None:
+            raise NotFoundError("Threat not found")
+        return row
+
+    def get(self, threat_id):
+        return self.serialize(self.find(threat_id))

@@ -39,3 +39,9 @@ def create():
 def list_threats():
     """Author: Tatiana Kaado. List threat indicators."""
     return success_response("Threats retrieved", {"threats": service.list()})
+
+@blueprint.get("/threats/<int:threat_id>")
+@require_roles(ADMIN, ANALYST, AUDITOR)
+def get(threat_id):
+    """Author: Tatiana Kaado. Retrieve one threat."""
+    return success_response("Threat retrieved", service.get(threat_id))
