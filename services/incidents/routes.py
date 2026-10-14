@@ -16,3 +16,10 @@ service = IncidentsService()
 def health():
     """Author: Omar Khalil. Return incidents service health."""
     return success_response("incidents service is healthy", service.health())
+
+
+@blueprint.post('/incidents')
+@require_roles(ADMIN, EMPLOYEE)
+def create():
+    """Author: Omar Khalil. Incident created."""
+    return success_response('Incident created', service.create(require_json_body(), g.user), 201)
