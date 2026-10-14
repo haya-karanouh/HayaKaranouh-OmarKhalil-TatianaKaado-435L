@@ -1,0 +1,2964 @@
+{
+  "info": {
+    "name": "Haya Karanouh - Security Incident Management APIs",
+    "description": "Postman scenario matrix for Users, Audit Logs, and Notifications. Run Authentication and token setup first; it saves role JWTs to collection variables. Development credentials come from database/seed.py.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication and token setup",
+      "item": [
+        {
+          "name": "Login - Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Admin@1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{users_url}}/users/login",
+            "description": "Haya Karanouh \u2013 Authentication \u2013 Log in as Admin and save the JWT collection variable."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login succeeds', function () { pm.response.to.have.status(200); });",
+                  "pm.collectionVariables.set('token_admin', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Setup - Create Service role account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_admin}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Postman Service\",\n  \"username\": \"postman-service-{{$guid}}\",\n  \"email\": \"postman-service-{{$guid}}@example.com\",\n  \"password\": \"PostmanService1\",\n  \"department\": \"Security\",\n  \"role\": \"Service\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{users_url}}/users/register",
+            "description": "Haya Karanouh \u2013 Authentication \u2013 Create a development SERVICE-role account so its login request can save a token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Service user created', function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set('service_username', pm.response.json().data.username);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login - Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{service_username}}\",\n  \"password\": \"PostmanService1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{users_url}}/users/login",
+            "description": "Haya Karanouh \u2013 Authentication \u2013 Log in as Service and save the JWT collection variable."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login succeeds', function () { pm.response.to.have.status(200); });",
+                  "pm.collectionVariables.set('token_service', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login - Analyst",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"analyst\",\n  \"password\": \"Analyst@1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{users_url}}/users/login",
+            "description": "Haya Karanouh \u2013 Authentication \u2013 Log in as Analyst and save the JWT collection variable."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login succeeds', function () { pm.response.to.have.status(200); });",
+                  "pm.collectionVariables.set('token_analyst', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login - Employee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"employee\",\n  \"password\": \"Employee@1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{users_url}}/users/login",
+            "description": "Haya Karanouh \u2013 Authentication \u2013 Log in as Employee and save the JWT collection variable."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login succeeds', function () { pm.response.to.have.status(200); });",
+                  "pm.collectionVariables.set('token_employee', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login - Auditor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"auditor\",\n  \"password\": \"Auditor@1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{users_url}}/users/login",
+            "description": "Haya Karanouh \u2013 Authentication \u2013 Log in as Auditor and save the JWT collection variable."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login succeeds', function () { pm.response.to.have.status(200); });",
+                  "pm.collectionVariables.set('token_auditor', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Users: POST /users/register",
+          "item": [
+            {
+              "name": "POST /users/register - Success",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/register",
+                "description": "Haya Karanouh \u2013 POST /users/register \u2013 Create a new account; the response stores its ID for the later delete success case.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"full_name\": \"Postman User\",\n  \"username\": \"postman-user-{{$guid}}\",\n  \"email\": \"postman-{{$guid}}@example.com\",\n  \"password\": \"PostmanUser1\",\n  \"department\": \"QA\",\n  \"role\": \"Security Analyst\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });",
+                      "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                      "    const data = pm.response.json().data;",
+                      "    pm.collectionVariables.set('postman_user_id', data.id);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /users/register - Validation error",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/register",
+                "description": "Haya Karanouh \u2013 POST /users/register \u2013 Reject a malformed email before insertion.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"full_name\": \"Invalid Email\",\n  \"username\": \"bad-email-{{$guid}}\",\n  \"email\": \"invalid\",\n  \"password\": \"StrongPass1\",\n  \"department\": \"QA\",\n  \"role\": \"Regular Employee\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 422', function () { pm.response.to.have.status(422); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /users/register - Not found / new resource",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/register",
+                "description": "Haya Karanouh \u2013 POST /users/register \u2013 Registration has no lookup/not-found state; a previously absent username is accepted as a new resource.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"full_name\": \"New Resource\",\n  \"username\": \"new-resource-{{$guid}}\",\n  \"email\": \"new-{{$guid}}@example.com\",\n  \"password\": \"StrongPass1\",\n  \"department\": \"QA\",\n  \"role\": \"Regular Employee\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /users/register - Wrong role / public endpoint",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/register",
+                "description": "Haya Karanouh \u2013 POST /users/register \u2013 Registration is public and a non-admin token cannot assign the administrator role; the service forces Regular Employee.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"full_name\": \"Forced Employee\",\n  \"username\": \"forced-{{$guid}}\",\n  \"email\": \"forced-{{$guid}}@example.com\",\n  \"password\": \"StrongPass1\",\n  \"department\": \"QA\",\n  \"role\": \"Security Administrator\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /users/register - Missing token / public endpoint",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/register",
+                "description": "Haya Karanouh \u2013 POST /users/register \u2013 No bearer token is required for public registration.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"full_name\": \"Public Registration\",\n  \"username\": \"public-{{$guid}}\",\n  \"email\": \"public-{{$guid}}@example.com\",\n  \"password\": \"StrongPass1\",\n  \"department\": \"QA\",\n  \"role\": \"Regular Employee\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Users: POST /users/login",
+          "item": [
+            {
+              "name": "POST /users/login - Success",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/login",
+                "description": "Haya Karanouh \u2013 POST /users/login \u2013 Authenticate an active seeded administrator.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Admin@1234\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /users/login - Validation error",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/login",
+                "description": "Haya Karanouh \u2013 POST /users/login \u2013 Reject a login payload with no username or email.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"password\": \"Admin@1234\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 422', function () { pm.response.to.have.status(422); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /users/login - Not found / unknown account",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/login",
+                "description": "Haya Karanouh \u2013 POST /users/login \u2013 Unknown account names are rejected with the same credential response as a bad password.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"unknown-{{$guid}}\",\n  \"password\": \"StrongPass1\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /users/login - Wrong role / public endpoint",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/login",
+                "description": "Haya Karanouh \u2013 POST /users/login \u2013 Login is public and authenticates the supplied account, regardless of the caller token's role.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"employee\",\n  \"password\": \"Employee@1234\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /users/login - Missing token / public endpoint",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/login",
+                "description": "Haya Karanouh \u2013 POST /users/login \u2013 No bearer token is required to obtain a login token.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Admin@1234\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Users: PUT /users/3",
+          "item": [
+            {
+              "name": "PUT /users/3 - Success",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/3",
+                "description": "Haya Karanouh \u2013 PUT /users/3 \u2013 Update a seeded user's profile with administrator permission.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"department\": \"Engineering\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT /users/3 - Validation error",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/3",
+                "description": "Haya Karanouh \u2013 PUT /users/3 \u2013 Reject an invalid email address without changing the user.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"invalid\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 422', function () { pm.response.to.have.status(422); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT /users/3 - Not found",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/999999",
+                "description": "Haya Karanouh \u2013 PUT /users/3 \u2013 Return 404 when an administrator updates a nonexistent user ID.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"department\": \"QA\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT /users/3 - Wrong role",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/1",
+                "description": "Haya Karanouh \u2013 PUT /users/3 \u2013 A regular employee cannot update another user's account.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"department\": \"QA\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT /users/3 - Missing token",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/3",
+                "description": "Haya Karanouh \u2013 PUT /users/3 \u2013 Reject profile updates without a bearer token.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"department\": \"Engineering\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Users: DELETE /users/3",
+          "item": [
+            {
+              "name": "DELETE /users/3 - Success",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/{{postman_user_id}}",
+                "description": "Haya Karanouh \u2013 DELETE /users/3 \u2013 Delete the account created by the registration success request."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /users/3 - Validation error / invalid ID syntax",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/not-an-integer",
+                "description": "Haya Karanouh \u2013 DELETE /users/3 \u2013 This bodyless endpoint validates its integer path converter; malformed IDs do not match the route."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /users/3 - Not found",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/999999",
+                "description": "Haya Karanouh \u2013 DELETE /users/3 \u2013 Return 404 for an absent user ID."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /users/3 - Wrong role",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_analyst}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/3",
+                "description": "Haya Karanouh \u2013 DELETE /users/3 \u2013 Analysts cannot delete user accounts."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /users/3 - Missing token",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "{{users_url}}/users/3",
+                "description": "Haya Karanouh \u2013 DELETE /users/3 \u2013 Reject deletion without a bearer token."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Users: GET /users",
+          "item": [
+            {
+              "name": "GET /users - Success",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users",
+                "description": "Haya Karanouh \u2013 GET /users \u2013 Retrieve password-free user summaries as an administrator."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /users - Validation error",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users?role=not-a-role",
+                "description": "Haya Karanouh \u2013 GET /users \u2013 Reject an unsupported role filter."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 422', function () { pm.response.to.have.status(422); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /users - Not found / collection response",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_auditor}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users?role=Service",
+                "description": "Haya Karanouh \u2013 GET /users \u2013 A collection has no single-record 404 state; this valid role filter returns the collection for that role."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /users - Wrong role",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users",
+                "description": "Haya Karanouh \u2013 GET /users \u2013 Regular employees cannot list all user records."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /users - Missing token",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{users_url}}/users",
+                "description": "Haya Karanouh \u2013 GET /users \u2013 Reject user listing without a bearer token."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Users: GET /users/employee",
+          "item": [
+            {
+              "name": "GET /users/employee - Success",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/employee",
+                "description": "Haya Karanouh \u2013 GET /users/employee \u2013 Retrieve the current employee's own password-free profile."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /users/employee - Validation error / path syntax",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/",
+                "description": "Haya Karanouh \u2013 GET /users/employee \u2013 The username path segment is required; an incomplete path does not match the route."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /users/employee - Not found",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/no-such-user",
+                "description": "Haya Karanouh \u2013 GET /users/employee \u2013 Return 404 when the requested username does not exist."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /users/employee - Wrong role",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_analyst}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{users_url}}/users/employee",
+                "description": "Haya Karanouh \u2013 GET /users/employee \u2013 Analysts are not authorized to retrieve user profiles through this endpoint."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /users/employee - Missing token",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{users_url}}/users/employee",
+                "description": "Haya Karanouh \u2013 GET /users/employee \u2013 Reject private profile access without a bearer token."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Audit Logs",
+      "item": [
+        {
+          "name": "Audit Logs: POST /logs",
+          "item": [
+            {
+              "name": "POST /logs - Success",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs",
+                "description": "Haya Karanouh \u2013 POST /logs \u2013 Create a manual audit event and save its ID for detail/delete requests.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 1,\n  \"action\": \"DATA_CREATED\",\n  \"description\": \"Postman manual log\",\n  \"severity\": \"Information\",\n  \"related_service\": \"logs\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });",
+                      "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                      "    const data = pm.response.json().data;",
+                      "    pm.collectionVariables.set('postman_log_id', data.id);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /logs - Validation error",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs",
+                "description": "Haya Karanouh \u2013 POST /logs \u2013 Reject a log record missing its required action.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 1,\n  \"description\": \"Missing action\",\n  \"severity\": \"Information\",\n  \"related_service\": \"logs\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 422', function () { pm.response.to.have.status(422); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /logs - Not found",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs",
+                "description": "Haya Karanouh \u2013 POST /logs \u2013 Reject a provided user ID that does not exist.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 999999,\n  \"action\": \"DATA_CREATED\",\n  \"description\": \"Unknown actor\",\n  \"severity\": \"Information\",\n  \"related_service\": \"logs\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /logs - Wrong role",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs",
+                "description": "Haya Karanouh \u2013 POST /logs \u2013 Regular employees cannot write audit log records.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 3,\n  \"action\": \"DATA_CREATED\",\n  \"description\": \"Denied\",\n  \"severity\": \"Information\",\n  \"related_service\": \"logs\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /logs - Missing token",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs",
+                "description": "Haya Karanouh \u2013 POST /logs \u2013 Reject unauthenticated log creation.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 1,\n  \"action\": \"DATA_CREATED\",\n  \"description\": \"No auth\",\n  \"severity\": \"Information\",\n  \"related_service\": \"logs\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Audit Logs: GET /logs",
+          "item": [
+            {
+              "name": "GET /logs - Success",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs",
+                "description": "Haya Karanouh \u2013 GET /logs \u2013 Retrieve the audit log collection."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs - Validation error / no filter inputs",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs?unsupported=ignored",
+                "description": "Haya Karanouh \u2013 GET /logs \u2013 This collection endpoint has no filter fields; the response confirms it remains a read-only list."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs - Not found / collection response",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_auditor}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs",
+                "description": "Haya Karanouh \u2013 GET /logs \u2013 A collection endpoint returns a list rather than a single-record 404."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs - Wrong role",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs",
+                "description": "Haya Karanouh \u2013 GET /logs \u2013 Regular employees cannot read the full audit collection."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs - Missing token",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{logs_url}}/logs",
+                "description": "Haya Karanouh \u2013 GET /logs \u2013 Reject audit collection access without a bearer token."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Audit Logs: GET /logs/1",
+          "item": [
+            {
+              "name": "GET /logs/1 - Success",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/{{postman_log_id}}",
+                "description": "Haya Karanouh \u2013 GET /logs/1 \u2013 Retrieve the log created by the POST success request."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs/1 - Validation error / path syntax",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/not-an-integer",
+                "description": "Haya Karanouh \u2013 GET /logs/1 \u2013 The integer path converter rejects malformed IDs before dispatch."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs/1 - Not found",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/999999",
+                "description": "Haya Karanouh \u2013 GET /logs/1 \u2013 Return 404 for an absent log ID."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs/1 - Wrong role",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/1",
+                "description": "Haya Karanouh \u2013 GET /logs/1 \u2013 Regular employees cannot inspect individual audit records."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs/1 - Missing token",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{logs_url}}/logs/1",
+                "description": "Haya Karanouh \u2013 GET /logs/1 \u2013 Reject log detail access without authentication."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Audit Logs: GET /logs/search",
+          "item": [
+            {
+              "name": "GET /logs/search - Success",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_analyst}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/search?action=LOGIN_SUCCESS",
+                "description": "Haya Karanouh \u2013 GET /logs/search \u2013 Search audit records by a valid standard action."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs/search - Validation error",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/search?severity=Bogus",
+                "description": "Haya Karanouh \u2013 GET /logs/search \u2013 Reject unsupported severity filter values."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 422', function () { pm.response.to.have.status(422); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs/search - Not found / no matches",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_auditor}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/search?user_id=999999",
+                "description": "Haya Karanouh \u2013 GET /logs/search \u2013 Search returns an empty list when a valid filter has no matching records."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs/search - Wrong role",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/search",
+                "description": "Haya Karanouh \u2013 GET /logs/search \u2013 Regular employees cannot search audit records."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs/search - Missing token",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{logs_url}}/logs/search",
+                "description": "Haya Karanouh \u2013 GET /logs/search \u2013 Reject audit search without a bearer token."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Audit Logs: GET /logs/user/1",
+          "item": [
+            {
+              "name": "GET /logs/user/1 - Success",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/user/1",
+                "description": "Haya Karanouh \u2013 GET /logs/user/1 \u2013 Retrieve a seeded administrator's audit history."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs/user/1 - Validation error / path syntax",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/user/not-an-integer",
+                "description": "Haya Karanouh \u2013 GET /logs/user/1 \u2013 The path converter requires an integer user ID."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs/user/1 - Not found",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/user/999999",
+                "description": "Haya Karanouh \u2013 GET /logs/user/1 \u2013 Return 404 for an unknown user ID."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs/user/1 - Wrong role",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_analyst}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/user/1",
+                "description": "Haya Karanouh \u2013 GET /logs/user/1 \u2013 Analysts cannot use the per-user audit endpoint."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /logs/user/1 - Missing token",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{logs_url}}/logs/user/1",
+                "description": "Haya Karanouh \u2013 GET /logs/user/1 \u2013 Reject per-user log access without a bearer token."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Audit Logs: DELETE /logs/1",
+          "item": [
+            {
+              "name": "DELETE /logs/1 - Success",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/{{postman_log_id}}",
+                "description": "Haya Karanouh \u2013 DELETE /logs/1 \u2013 Delete the log created by the POST success request."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /logs/1 - Validation error / path syntax",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/not-an-integer",
+                "description": "Haya Karanouh \u2013 DELETE /logs/1 \u2013 The bodyless delete route uses an integer ID path converter."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /logs/1 - Not found",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/999999",
+                "description": "Haya Karanouh \u2013 DELETE /logs/1 \u2013 Return 404 when the log ID is absent."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /logs/1 - Wrong role",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_analyst}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{logs_url}}/logs/1",
+                "description": "Haya Karanouh \u2013 DELETE /logs/1 \u2013 Only administrators may delete an audit record."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /logs/1 - Missing token",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "{{logs_url}}/logs/1",
+                "description": "Haya Karanouh \u2013 DELETE /logs/1 \u2013 Reject deletion without a bearer token."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Notifications: POST /notifications",
+          "item": [
+            {
+              "name": "POST /notifications - Success",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications",
+                "description": "Haya Karanouh \u2013 POST /notifications \u2013 Create an unread notification for a real seeded user and save its ID.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 1,\n  \"title\": \"Postman notification\",\n  \"message\": \"Created by the collection\",\n  \"notification_type\": \"Security Alert\",\n  \"severity\": \"High\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });",
+                      "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                      "    const data = pm.response.json().data;",
+                      "    pm.collectionVariables.set('postman_notification_id', data.id);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /notifications - Validation error",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications",
+                "description": "Haya Karanouh \u2013 POST /notifications \u2013 Reject notification creation when severity is missing.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 1,\n  \"title\": \"Missing severity\",\n  \"message\": \"Invalid request\",\n  \"notification_type\": \"Security Alert\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 422', function () { pm.response.to.have.status(422); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /notifications - Not found",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications",
+                "description": "Haya Karanouh \u2013 POST /notifications \u2013 Verify the Users service rejects a nonexistent recipient.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 999999,\n  \"title\": \"Unknown user\",\n  \"message\": \"Recipient lookup\",\n  \"notification_type\": \"Security Alert\",\n  \"severity\": \"High\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /notifications - Wrong role",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_analyst}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications",
+                "description": "Haya Karanouh \u2013 POST /notifications \u2013 Analysts cannot create notifications through this endpoint.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 2,\n  \"title\": \"Denied\",\n  \"message\": \"Role check\",\n  \"notification_type\": \"Security Alert\",\n  \"severity\": \"High\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /notifications - Missing token",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications",
+                "description": "Haya Karanouh \u2013 POST /notifications \u2013 Reject notification creation without authentication.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 1,\n  \"title\": \"No token\",\n  \"message\": \"Auth check\",\n  \"notification_type\": \"Security Alert\",\n  \"severity\": \"High\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Notifications: GET /notifications/user/1",
+          "item": [
+            {
+              "name": "GET /notifications/user/1 - Success",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/user/1",
+                "description": "Haya Karanouh \u2013 GET /notifications/user/1 \u2013 Retrieve notifications for a user as an administrator."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /notifications/user/1 - Validation error / path syntax",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/user/not-an-integer",
+                "description": "Haya Karanouh \u2013 GET /notifications/user/1 \u2013 The route requires an integer user ID."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /notifications/user/1 - Not found",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/user/999999",
+                "description": "Haya Karanouh \u2013 GET /notifications/user/1 \u2013 Return 404 when the recipient account does not exist."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /notifications/user/1 - Wrong role",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/user/1",
+                "description": "Haya Karanouh \u2013 GET /notifications/user/1 \u2013 An employee cannot inspect another user's notifications."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /notifications/user/1 - Missing token",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{notifications_url}}/notifications/user/1",
+                "description": "Haya Karanouh \u2013 GET /notifications/user/1 \u2013 Reject per-user notification access without authentication."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Notifications: GET /notifications/1",
+          "item": [
+            {
+              "name": "GET /notifications/1 - Success",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/{{postman_notification_id}}",
+                "description": "Haya Karanouh \u2013 GET /notifications/1 \u2013 Retrieve the notification created by the POST success request."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /notifications/1 - Validation error / path syntax",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/not-an-integer",
+                "description": "Haya Karanouh \u2013 GET /notifications/1 \u2013 The route requires an integer notification ID."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /notifications/1 - Not found",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/999999",
+                "description": "Haya Karanouh \u2013 GET /notifications/1 \u2013 Return 404 when a notification ID is absent."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /notifications/1 - Wrong role",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/1",
+                "description": "Haya Karanouh \u2013 GET /notifications/1 \u2013 An employee cannot read another user's notification."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /notifications/1 - Missing token",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{notifications_url}}/notifications/1",
+                "description": "Haya Karanouh \u2013 GET /notifications/1 \u2013 Reject notification detail access without a bearer token."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Notifications: PUT /notifications/1/read",
+          "item": [
+            {
+              "name": "PUT /notifications/1/read - Success",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/{{postman_notification_id}}/read",
+                "description": "Haya Karanouh \u2013 PUT /notifications/1/read \u2013 Mark the created notification as read."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT /notifications/1/read - Validation error / path syntax",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/not-an-integer/read",
+                "description": "Haya Karanouh \u2013 PUT /notifications/1/read \u2013 The route requires an integer notification ID."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT /notifications/1/read - Not found",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/999999/read",
+                "description": "Haya Karanouh \u2013 PUT /notifications/1/read \u2013 Return 404 when the notification does not exist."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT /notifications/1/read - Wrong role",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/1/read",
+                "description": "Haya Karanouh \u2013 PUT /notifications/1/read \u2013 An employee cannot change another user's notification state."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT /notifications/1/read - Missing token",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": "{{notifications_url}}/notifications/1/read",
+                "description": "Haya Karanouh \u2013 PUT /notifications/1/read \u2013 Reject read-state changes without authentication."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Notifications: GET /notifications/search",
+          "item": [
+            {
+              "name": "GET /notifications/search - Success",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_analyst}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/search?notification_type=Security Alert",
+                "description": "Haya Karanouh \u2013 GET /notifications/search \u2013 Search notifications by a valid notification type."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /notifications/search - Validation error",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/search?status=Unknown",
+                "description": "Haya Karanouh \u2013 GET /notifications/search \u2013 Reject unsupported notification status values."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 422', function () { pm.response.to.have.status(422); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /notifications/search - Not found / no matches",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_auditor}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/search?user_id=999999",
+                "description": "Haya Karanouh \u2013 GET /notifications/search \u2013 Return a valid empty result for filters with no matching notifications."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /notifications/search - Wrong role",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_employee}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/search",
+                "description": "Haya Karanouh \u2013 GET /notifications/search \u2013 Regular employees cannot use the search endpoint."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GET /notifications/search - Missing token",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{notifications_url}}/notifications/search",
+                "description": "Haya Karanouh \u2013 GET /notifications/search \u2013 Reject notification search without authentication."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Notifications: DELETE /notifications/1",
+          "item": [
+            {
+              "name": "DELETE /notifications/1 - Success",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/{{postman_notification_id}}",
+                "description": "Haya Karanouh \u2013 DELETE /notifications/1 \u2013 Delete the notification created by the POST success request."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /notifications/1 - Validation error / path syntax",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/not-an-integer",
+                "description": "Haya Karanouh \u2013 DELETE /notifications/1 \u2013 The integer path converter rejects malformed notification IDs."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /notifications/1 - Not found",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_admin}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/999999",
+                "description": "Haya Karanouh \u2013 DELETE /notifications/1 \u2013 Return 404 for a missing notification ID."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /notifications/1 - Wrong role",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token_analyst}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{notifications_url}}/notifications/1",
+                "description": "Haya Karanouh \u2013 DELETE /notifications/1 \u2013 Only administrators may delete notifications."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DELETE /notifications/1 - Missing token",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "{{notifications_url}}/notifications/1",
+                "description": "Haya Karanouh \u2013 DELETE /notifications/1 \u2013 Reject notification deletion without a bearer token."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "users_url",
+      "value": "http://127.0.0.1:5001"
+    },
+    {
+      "key": "logs_url",
+      "value": "http://127.0.0.1:5005"
+    },
+    {
+      "key": "notifications_url",
+      "value": "http://127.0.0.1:5008"
+    },
+    {
+      "key": "token_admin",
+      "value": ""
+    },
+    {
+      "key": "token_analyst",
+      "value": ""
+    },
+    {
+      "key": "token_employee",
+      "value": ""
+    },
+    {
+      "key": "token_auditor",
+      "value": ""
+    },
+    {
+      "key": "token_service",
+      "value": ""
+    },
+    {
+      "key": "service_username",
+      "value": ""
+    },
+    {
+      "key": "postman_user_id",
+      "value": ""
+    },
+    {
+      "key": "postman_log_id",
+      "value": ""
+    },
+    {
+      "key": "postman_notification_id",
+      "value": ""
+    }
+  ]
+}
