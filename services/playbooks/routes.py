@@ -30,3 +30,10 @@ def create():
 def list_playbooks():
     """Author: Omar Khalil. Playbooks retrieved."""
     return success_response('Playbooks retrieved', {'playbooks': service.list()})
+
+
+@blueprint.get('/playbooks/<int:playbook_id>')
+@require_roles(ADMIN, ANALYST, AUDITOR)
+def get(playbook_id):
+    """Author: Omar Khalil. Playbook retrieved."""
+    return success_response('Playbook retrieved', service.get(playbook_id))
