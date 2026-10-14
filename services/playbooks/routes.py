@@ -51,3 +51,10 @@ def add_action(playbook_id):
 def status(action_id):
     """Author: Omar Khalil. Response action status changed."""
     return success_response('Response action status changed', service.status(action_id, require_json_body(), g.user))
+
+
+@blueprint.delete('/playbooks/<int:playbook_id>')
+@require_roles(ADMIN)
+def delete(playbook_id):
+    """Author: Omar Khalil. Playbook deleted."""
+    return success_response('Playbook deleted', service.delete(playbook_id, g.user))
