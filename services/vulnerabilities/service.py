@@ -125,7 +125,7 @@ class VulnerabilitiesService:
         self.validate(data, row)
         old_status = row.status
         new_status = data.get("status", old_status)
-        if new_status != old_status:
+        if "status" in data:
             index = VULNERABILITY_STATUSES.index(old_status)
             if index == len(VULNERABILITY_STATUSES) - 1 or new_status != VULNERABILITY_STATUSES[index + 1]:
                 raise ValidationError("Status must advance exactly one step: Open -> Under Investigation -> In Progress -> Resolved -> Closed")

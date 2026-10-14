@@ -53,6 +53,7 @@ def main():
             check("GET", 5007, "/vulnerabilities", role=role)
             check("GET", 5007, path, role=role)
         check("PUT", 5007, path, 422, json={"status": "Closed"})
+        check("PUT", 5007, path, 422, json={"status": "Open"})
         check("PUT", 5007, path, 422, json={"cvss_score": 2})
         check("PUT", 5007, path, json={"description": "Updated", "cvss_score": 7.5, "severity": "High"}, role="analyst")
         for status in ["Under Investigation", "In Progress", "Resolved", "Closed"]:
@@ -61,6 +62,7 @@ def main():
             if status in ("Resolved", "Closed"):
                 assert updated["resolved_at"]
         found = check("GET", 5007, "/vulnerabilities/search", params={"cve_id": body["cve_id"], "severity": "High", "asset_id": asset["id"], "status": "Closed"})
+        check("PUT", 5007, path, 422, json={"status": "Closed"})
         assert any(item["id"] == row["id"] for item in found["vulnerabilities"])
         check("GET", 5007, "/vulnerabilities/999999", 404)
         check("GET", 5007, "/vulnerabilities", 403, role="employee")

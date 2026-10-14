@@ -100,6 +100,28 @@ python -m scripts.check_omar_postman
 
 Capture Omar's evidence with `python -m scripts.evidence.omar_khalil_evidence`. It checks all nine health endpoints before resetting/seeding the development database, logs in through the real login API, and asserts actual HTTP status codes before continuing. Screenshots and two-sentence explanations are written to `evidence/Omar_Khalil/`, including every table's structure/foreign keys and authored Git history. Repeated captures append numbered images, so use a fresh output folder if only one run is desired.
 
+### Tatiana Kaado: Threat Intelligence, Vulnerabilities and Reports
+
+Threat Intelligence (`5004`) exposes POST/GET `/threats`, GET/PUT/DELETE `/threats/{id}`, and GET `/threats/search`. Administrators mutate indicators; administrators, analysts and auditors read them. IPv4, domain and MD5/SHA1/SHA256 values use the shared validators. Domain and hash values are normalized to lowercase, duplicate type/value pairs return 409, and updates permit only description, severity and source. Search combines exact type/severity/source and literal partial value filters with AND.
+
+Vulnerabilities (`5007`) exposes the equivalent six `/vulnerabilities` endpoints. Administrators create/delete, administrators and analysts update, and administrators/analysts/auditors read. Asset existence, name and status come from the assets API. CVSS must match severity: below 4 Low, below 7 Medium, below 9 High, otherwise Critical through 10. Score 0 uses Low because the shared enum has no None severity. Explicit status updates must advance exactly one step through Open, Under Investigation, In Progress, Resolved and Closed. Entering Resolved automatically sets `resolved_at`; subsequent resolution-date edits accept an ISO timestamp between creation and now, only for Resolved/Closed findings.
+
+Reports (`5006`) exposes GET `/reports/summary`, `/reports/incidents`, `/reports/assets`, `/reports/threats`, `/reports/vulnerabilities` and `/reports/activity` to administrators and auditors only, including rejection of internal Service tokens. Data is collected exclusively through `call_service`; unavailable sources return 503. Summary open incidents include all statuses except Resolved and Closed. Activity counts LOGIN_SUCCESS plus LOGIN_FAILED as attempts and returns the five most frequent actions, with alphabetical tie-breaking. Reports log REPORT_GENERATED after collecting their data, so activity/recent-log results exclude their own generation event.
+
+All mutations use `log_event`. Critical creation or escalation retrieves administrators using the users API's role filter and calls the shared notification helper for each recipient; logging and notification delivery retain the foundation's best-effort behavior. The idempotent Tatiana seed runs after the existing seeds and covers all threat types, severities and vulnerability statuses. No `common/` changes are required.
+
+Import [Tatiana's Postman collection](postman/TatianaKaado.postman_collection.json) and run folders in order. Its 124 requests save role tokens and created IDs, assert expected statuses and cover each endpoint; collection endpoints use unknown child routes for 404 examples because empty collections return 200. Malformed JSON provides 400 validation examples for bodyless threat/vulnerability routes.
+
+```sh
+python -m scripts.tatiana_http_checks threats
+python -m scripts.tatiana_http_checks vulnerabilities
+python -m scripts.tatiana_http_checks reports
+python -m scripts.check_tatiana_postman
+python -m scripts.evidence.tatiana_kaado_evidence --outage
+```
+
+The evidence command requires all services running via `run_all.py`, then resets/seeds the development database, logs in through the real API and creates successful/failed login activity. It saves screenshots and two- or three-sentence explanations in `evidence/Tatiana_Kaado/` and asserts report totals against independent SQL queries. Optional `--outage` briefly pauses the verified local assets process on port 5002 and always resumes it in a finally block to demonstrate a real 503. Captures append numbered images; use a fresh output folder for a single run. The recorder falls back to installed Chrome when bundled Chromium is unavailable.
+
 ## Evidence tooling
 
 With all services running, capture a screenshot of each real health request:
