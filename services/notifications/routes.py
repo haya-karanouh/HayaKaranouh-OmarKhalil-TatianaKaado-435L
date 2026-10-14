@@ -37,6 +37,15 @@ def get_notification(notification_id):
     return success_response("Notification retrieved", service.get_notification(notification_id, g.user))
 
 
+@blueprint.put("/notifications/<int:notification_id>/read")
+@require_roles(ADMIN, ANALYST, EMPLOYEE, SERVICE)
+def mark_notification_read(notification_id):
+    """Author: Haya Karanouh. Mark an owned notification as read."""
+    result = service.mark_read(notification_id, g.user)
+    message = "Notification was already read" if result["already_read"] else "Notification marked as read"
+    return success_response(message, result["notification"])
+
+
 @blueprint.get("/health")
 def health():
     """Author: Haya Karanouh. Return notifications service health."""

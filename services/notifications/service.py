@@ -1,12 +1,13 @@
 """Business logic for notifications service."""
 
+from datetime import datetime
 import requests
 from werkzeug.exceptions import ServiceUnavailable
 
 from common.config import SERVICE_URLS
 from common.constants import (
     ADMIN, ANALYST, AUDITOR, DATA_CREATED, EMPLOYEE, INCIDENT_SEVERITIES,
-    NOTIFICATION_TYPES, SERVICE,
+    NOTIFICATION_TYPES, SERVICE, STATUS_CHANGED,
 )
 from common.db import db
 from common.errors import NotFoundError, PermissionDenied, ValidationError
@@ -64,6 +65,20 @@ class NotificationsService:
         if actor["role"] not in privileged_roles and actor["user_id"] != notification.user_id:
             raise PermissionDenied("You may only view your own notifications")
         return self.serialize(notification)
+
+    def mark_read(self, notification_id, actor):
+        notification = db.session.get(Notification, notification_id)
+        if notification is None:
+            raise NotFoundError("Notification not found")
+        if actor["role"] not in {ADMIN, SERVICE} and actor["user_id"] != notification.user_id:
+            raise PermissionDenied("You may only update your own notifications")
+        if notification.status == "Read":
+            return {"notification": self.serialize(notification), "already_read": True}
+        notification.status = "Read"
+        notification.read_at = datetime.utcnow()
+        db.session.commit()
+        log_event(actor.get("user_id"), STATUS_CHANGED, f"Marked notification {notification.id} as read", "Information", "notifications")
+        return {"notification": self.serialize(notification), "already_read": False}
 
     @staticmethod
     def serialize(notification):
