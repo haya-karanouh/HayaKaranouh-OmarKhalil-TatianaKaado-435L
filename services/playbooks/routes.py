@@ -23,3 +23,10 @@ def health():
 def create():
     """Author: Omar Khalil. Playbook created."""
     return success_response('Playbook created', service.create(require_json_body(), g.user), 201)
+
+
+@blueprint.get('/playbooks')
+@require_roles(ADMIN, ANALYST, AUDITOR)
+def list_playbooks():
+    """Author: Omar Khalil. Playbooks retrieved."""
+    return success_response('Playbooks retrieved', {'playbooks': service.list()})
