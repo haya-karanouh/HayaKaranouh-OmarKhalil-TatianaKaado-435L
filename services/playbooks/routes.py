@@ -37,3 +37,10 @@ def list_playbooks():
 def get(playbook_id):
     """Author: Omar Khalil. Playbook retrieved."""
     return success_response('Playbook retrieved', service.get(playbook_id))
+
+
+@blueprint.post('/playbooks/<int:playbook_id>/actions')
+@require_roles(ADMIN, ANALYST)
+def add_action(playbook_id):
+    """Author: Omar Khalil. Response action created."""
+    return success_response('Response action created', service.add_action(playbook_id, require_json_body(), g.user), 201)
