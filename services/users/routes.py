@@ -64,6 +64,13 @@ def list_users():
     return success_response("Users retrieved", {"users": service.list_users(request.args.get("role"))})
 
 
+@blueprint.get("/users/<string:username>")
+@require_roles(ADMIN, AUDITOR, EMPLOYEE)
+def get_user(username):
+    """Author: Haya Karanouh. Retrieve a user within the caller's access scope."""
+    return success_response("User retrieved", service.get_by_username(username, g.user))
+
+
 @blueprint.get("/health")
 def health():
     """Author: Haya Karanouh. Return users service health."""

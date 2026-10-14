@@ -144,6 +144,14 @@ class UsersService:
             query = query.filter(User.role == role)
         return [self.serialize(user) for user in query.order_by(User.id).all()]
 
+    def get_by_username(self, username, actor):
+        user = db.session.query(User).filter_by(username=username).first()
+        if user is None:
+            raise NotFoundError("User not found")
+        if actor["role"] == EMPLOYEE and actor["username"] != user.username:
+            raise PermissionDenied("Regular employees may only view their own account")
+        return self.serialize(user)
+
     @staticmethod
     def serialize(user):
         return {
