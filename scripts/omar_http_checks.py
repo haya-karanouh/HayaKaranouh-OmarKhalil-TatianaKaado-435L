@@ -22,6 +22,48 @@ class Checks:
         self.count += 1
         return response.json().get('data')
 
+    def incidents(self):
+        asset = self.request('POST', 5002, '/assets', 201, body=dict(name='Incident test asset', asset_type='Server', ip_address='10.4.5.6', owner_id=3, department='Engineering', criticality='High'))
+        body = dict(title='HTTP phishing report', description='Suspicious attachment', category='Phishing', severity='High', asset_id=asset['id'])
+        incident = self.request('POST', 5003, '/incidents', 201, role='employee', body=body)
+        path = f'/incidents/{incident["id"]}'
+        assert incident['reporter_id'] == 3 and incident['status'] == 'Open'
+        for data in [{**body, 'severity': 'Extreme'}, {**body, 'category': 'Unknown'}, {**body, 'asset_id': True}, {'title': 'Missing'}]:
+            self.request('POST', 5003, '/incidents', 422, body=data)
+        self.request('POST', 5003, '/incidents', 404, body={**body, 'asset_id': 999999})
+        self.request('POST', 5003, '/incidents', 403, role='analyst', body=body)
+        self.request('GET', 5003, '/incidents', role='auditor')
+        rows = self.request('GET', 5003, '/incidents', params={'asset_id': asset['id']})['incidents']
+        assert [row['id'] for row in rows] == [incident['id']]
+        self.request('GET', 5003, '/incidents', 422, params={'asset_id': 'bad'})
+        self.request('GET', 5003, path, role='employee')
+        self.request('GET', 5003, path, 403, role='employee2')
+        self.request('GET', 5003, path, 403, role='analyst')
+        self.request('PUT', 5003, path + '/assign', 403, role='analyst', body={'analyst_id': 2})
+        self.request('PUT', 5003, path + '/assign', 422, body={'analyst_id': 3})
+        self.request('PUT', 5003, path + '/assign', 404, body={'analyst_id': 999999})
+        assigned = self.request('PUT', 5003, path + '/assign', body={'analyst_id': 2})
+        assert assigned['assigned_analyst_id'] == 2
+        self.request('GET', 5003, path, role='analyst')
+        self.request('PUT', 5003, path + '/status', 422, body={'status': 'Closed'})
+        for status in ['Under Investigation', 'Mitigated', 'Resolved', 'Closed']:
+            row = self.request('PUT', 5003, path + '/status', role='analyst', body={'status': status})
+            assert row['status'] == status
+            if status in ['Resolved', 'Closed']:
+                assert row['resolved_at']
+        self.request('PUT', 5003, path + '/status', 422, body={'status': 'Resolved'})
+        note = self.request('POST', 5003, path + '/notes', 201, role='analyst', body={'content': 'Quarantined attachment and reviewed headers.'})
+        assert note['analyst_id'] == 2
+        assert self.request('GET', 5003, path)['investigation_notes'][0]['id'] == note['id']
+        for method, suffix, data in [('GET', '', None), ('PUT', '/assign', {'analyst_id': 2}), ('PUT', '/status', {'status': 'Closed'}), ('POST', '/notes', {'content': 'Note'})]:
+            self.request(method, 5003, '/incidents/999999' + suffix, 404, body=data)
+            self.request(method, 5003, path + suffix, 401, role=None, body=data)
+        notifications = self.request('GET', 5008, '/notifications/user/2')['notifications']
+        assert any(row['notification_type'] == 'Incident Assignment' for row in notifications)
+        self.request('DELETE', 5002, f'/assets/{asset["id"]}', 409)
+        linked = self.request('GET', 5002, f'/assets/{asset["id"]}')
+        assert incident['id'] in linked['related_incident_ids']
+
     def assets(self):
         body = dict(name='HTTP test server', asset_type='Server', ip_address='10.1.2.3', owner_id=3, department='Engineering', criticality='High')
         asset = self.request('POST', 5002, '/assets', 201, body=body)
