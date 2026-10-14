@@ -31,14 +31,33 @@ class EvidenceRecorder:
         self._next_number += 1
         slug = re.sub(r"[^A-Za-z0-9]+", "_", caption).strip("_").lower()[:48] or "evidence"
         filename = f"{number:02d}_{slug}.png"
-        title_parts = [self.student_full_name, caption]
-        if explanation:
-            title_parts.append(explanation)
-        title = " – ".join(title_parts)
-        section_html = "".join(
-            f"<section><h2>{html.escape(label)}</h2><pre>{html.escape(content)}</pre></section>"
-            for label, content in sections
+        prefix = f"{self.student_full_name} – "
+        full_caption = caption if caption.startswith(prefix) else f"{prefix}{caption}"
+        explanation_html = (
+            f"<section><h2>Explanation</h2><pre>{html.escape(explanation)}</pre></section>"
+            if explanation else ""
         )
+        section_parts = []
+        for label, content in sections:
+            if label == "Rows" and isinstance(content, dict) and {"columns", "rows"} <= content.keys():
+                columns = content["columns"]
+                heading = "".join(f"<th>{html.escape(str(column))}</th>" for column in columns)
+                body = "".join(
+                    "<tr>" + "".join(
+                        f"<td>{html.escape(str(row.get(column, '')))}</td>" for column in columns
+                    ) + "</tr>"
+                    for row in content["rows"]
+                )
+                if not body:
+                    body = f"<tr><td colspan='{max(1, len(columns))}'>(no rows)</td></tr>"
+                section_parts.append(
+                    f"<section><h2>{html.escape(label)}</h2><table><thead><tr>{heading}</tr></thead><tbody>{body}</tbody></table></section>"
+                )
+            else:
+                section_parts.append(
+                    f"<section><h2>{html.escape(label)}</h2><pre>{html.escape(str(content))}</pre></section>"
+                )
+        section_html = explanation_html + "".join(section_parts)
         document = f"""<!doctype html><html><head><meta charset='utf-8'><style>
             * {{ box-sizing: border-box; }} body {{ margin: 0; padding: 38px; color: #17212b;
             background: #edf1f4; font: 15px/1.5 -apple-system, BlinkMacSystemFont, sans-serif; }}
@@ -47,8 +66,10 @@ class EvidenceRecorder:
             background: #173b4f; }} h1 {{ margin: 0; font-size: 23px; }} section {{ padding: 18px 30px;
             border-bottom: 1px solid #e0e5e9; }} h2 {{ margin: 0 0 9px; color: #345365; font-size: 13px;
             text-transform: uppercase; }} pre {{ margin: 0; white-space: pre-wrap; overflow-wrap: anywhere;
-            font: 13px/1.55 ui-monospace, SFMono-Regular, monospace; }}
-            </style></head><body><main><header><h1>{html.escape(title)}</h1></header>
+            font: 13px/1.55 ui-monospace, SFMono-Regular, monospace; }} table {{ width: 100%; border-collapse: collapse;
+            font: 12px/1.45 ui-monospace, SFMono-Regular, monospace; }} th, td {{ padding: 8px; border: 1px solid #d7dfe5;
+            text-align: left; vertical-align: top; overflow-wrap: anywhere; }} th {{ background: #eef3f6; }}
+            </style></head><body><main><header><h1>{html.escape(full_caption)}</h1></header>
             {section_html}</main></body></html>"""
         image_path = self.output_dir / filename
         with sync_playwright() as playwright:
@@ -61,7 +82,7 @@ class EvidenceRecorder:
             page.locator("body").screenshot(path=str(image_path), animations="disabled")
             browser.close()
         with self.captions_path.open("a", encoding="utf-8") as captions:
-            captions.write(f"- **{filename}**: {caption}\n")
+            captions.write(f"- **{filename}**: {full_caption}\n")
             if explanation:
                 captions.write(f"  - {explanation}\n")
         return image_path
@@ -116,7 +137,7 @@ class EvidenceRecorder:
             connection.close()
         result = {"columns": headers, "rows": rows}
         self._render(caption, explanation, [("Read-only query", sql), ("Parameters", json_module_dumps(params)),
-                                            ("Rows", json_module_dumps(result))])
+                                            ("Rows", result)])
         return rows
 
     def text(self, caption, content, explanation=""):
