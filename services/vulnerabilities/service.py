@@ -84,3 +84,25 @@ class VulnerabilitiesService:
         for admin in admins:
             notify(admin["id"], "Critical vulnerability", f"Vulnerability {row.id}: {row.title}", "Vulnerability Alert", "Critical")
         return self.serialize(row, assets)
+
+    def list(self, filters=None):
+        filters = dict(filters or {})
+        require_fields(filters, set(), {"cve_id", "severity", "asset_id", "status"})
+        if "cve_id" in filters and not valid_cve(filters["cve_id"]):
+            raise ValidationError("Invalid CVE filter")
+        for field, choices in [("severity", INCIDENT_SEVERITIES), ("status", VULNERABILITY_STATUSES)]:
+            if field in filters and filters[field] not in choices:
+                raise ValidationError(f"Invalid {field} filter")
+        if "asset_id" in filters:
+            try:
+                filters["asset_id"] = int(filters["asset_id"])
+                if filters["asset_id"] < 1:
+                    raise ValueError()
+            except (TypeError, ValueError):
+                raise ValidationError("asset_id must be a positive integer")
+        query = db.session.query(Vulnerability)
+        for field, value in filters.items():
+            query = query.filter(getattr(Vulnerability, field) == value)
+        rows = query.order_by(Vulnerability.id).all()
+        assets = self.assets() if rows else {}
+        return [self.serialize(row, assets) for row in rows]

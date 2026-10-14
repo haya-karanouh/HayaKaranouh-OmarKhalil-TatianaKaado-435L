@@ -33,3 +33,9 @@ def check_json():
 def create():
     """Author: Tatiana Kaado. Create a validated vulnerability."""
     return success_response("Vulnerability created", service.create(require_json_body(), g.user), 201)
+
+@blueprint.get("/vulnerabilities")
+@require_roles(ADMIN, ANALYST, AUDITOR)
+def list_vulnerabilities():
+    """Author: Tatiana Kaado. List vulnerabilities with linked asset details."""
+    return success_response("Vulnerabilities retrieved", {"vulnerabilities": service.list()})
