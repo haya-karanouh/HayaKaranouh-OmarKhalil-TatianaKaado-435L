@@ -23,3 +23,10 @@ def health():
 def create():
     """Author: Omar Khalil. Asset created."""
     return success_response('Asset created', service.create(require_json_body(), g.user), 201)
+
+
+@blueprint.put('/assets/<int:asset_id>')
+@require_roles(ADMIN)
+def update(asset_id):
+    """Author: Omar Khalil. Asset updated."""
+    return success_response('Asset updated', service.update(asset_id, require_json_body(), g.user))
