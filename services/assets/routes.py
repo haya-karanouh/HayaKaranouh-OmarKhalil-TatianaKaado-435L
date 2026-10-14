@@ -16,3 +16,10 @@ service = AssetsService()
 def health():
     """Author: Omar Khalil. Return assets service health."""
     return success_response("assets service is healthy", service.health())
+
+
+@blueprint.post('/assets')
+@require_roles(ADMIN)
+def create():
+    """Author: Omar Khalil. Asset created."""
+    return success_response('Asset created', service.create(require_json_body(), g.user), 201)
