@@ -30,3 +30,10 @@ def create():
 def update(asset_id):
     """Author: Omar Khalil. Asset updated."""
     return success_response('Asset updated', service.update(asset_id, require_json_body(), g.user))
+
+
+@blueprint.delete('/assets/<int:asset_id>')
+@require_roles(ADMIN)
+def delete(asset_id):
+    """Author: Omar Khalil. Asset deleted."""
+    return success_response('Asset deleted', service.delete(asset_id, g.user))
