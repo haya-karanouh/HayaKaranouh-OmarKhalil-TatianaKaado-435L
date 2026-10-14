@@ -3,7 +3,7 @@
 from flask import Blueprint
 
 from common.auth import require_roles
-from common.constants import ADMIN, AUDITOR, SERVICE
+from common.constants import ADMIN, ANALYST, AUDITOR, SERVICE
 from common.errors import success_response
 from common.validators import require_fields, require_json_body
 from services.logs.service import LogsService
@@ -27,6 +27,13 @@ def create_log():
 def list_logs():
     """Author: Haya Karanouh. List audit records for authorized reviewers."""
     return success_response("Logs retrieved", {"logs": service.list_logs()})
+
+
+@blueprint.get("/logs/<int:log_id>")
+@require_roles(ADMIN, AUDITOR, ANALYST)
+def get_log(log_id):
+    """Author: Haya Karanouh. Retrieve one audit record by ID."""
+    return success_response("Log retrieved", service.get_log(log_id))
 
 
 @blueprint.get("/health")

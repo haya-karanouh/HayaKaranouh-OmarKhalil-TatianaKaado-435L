@@ -36,6 +36,12 @@ class LogsService:
         records = db.session.query(Log).order_by(Log.timestamp.desc(), Log.id.desc()).all()
         return [self.serialize(record) for record in records]
 
+    def get_log(self, log_id):
+        record = db.session.get(Log, log_id)
+        if record is None:
+            raise NotFoundError("Log not found")
+        return self.serialize(record)
+
     @staticmethod
     def serialize(record):
         return {
