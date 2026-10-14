@@ -157,3 +157,10 @@ class VulnerabilitiesService:
         for admin in admins:
             notify(admin["id"], "Critical vulnerability", f"Vulnerability {row.id}: {row.title}", "Vulnerability Alert", "Critical")
         return self.serialize(row, assets)
+
+    def delete(self, vulnerability_id, actor):
+        from common.constants import DATA_DELETED
+        db.session.delete(self.find(vulnerability_id))
+        db.session.commit()
+        log_event(actor["user_id"], DATA_DELETED, f"Deleted vulnerability {vulnerability_id}", "Warning", "vulnerabilities")
+        return {"id": vulnerability_id}

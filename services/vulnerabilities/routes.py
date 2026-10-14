@@ -57,3 +57,9 @@ def update(vulnerability_id):
 def search():
     """Author: Tatiana Kaado. Search CVE, severity, asset and status."""
     return success_response("Vulnerabilities retrieved", {"vulnerabilities": service.list(request.args)})
+
+@blueprint.delete("/vulnerabilities/<int:vulnerability_id>")
+@require_roles(ADMIN)
+def delete(vulnerability_id):
+    """Author: Tatiana Kaado. Delete a vulnerability as administrator."""
+    return success_response("Vulnerability deleted", service.delete(vulnerability_id, g.user))
