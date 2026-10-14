@@ -29,3 +29,10 @@ def summary():
 def incidents():
     """Author: Tatiana Kaado. Generate the incidents report from HTTP sources."""
     return success_response("incidents report generated", service.generate("incidents", g.user, request.args))
+
+
+@blueprint.get("/reports/assets")
+@require_roles(ADMIN, AUDITOR)
+def assets():
+    """Author: Tatiana Kaado. Generate the assets report from HTTP sources."""
+    return success_response("assets report generated", service.generate("assets", g.user, request.args))
