@@ -40,6 +40,36 @@ def main():
         check("GET", 5004, path, 404)
         notifications = check("GET", 5008, "/notifications/search")
         assert any(item["notification_type"] == "Threat Alert" for item in notifications["notifications"])
+    elif sys.argv[-1] == "vulnerabilities":
+        asset = check("GET", 5002, "/assets")["assets"][0]
+        body = dict(title="Live CVSS check", description="Check", cve_id="CVE-2026-12345", cvss_score=9.5, severity="Critical", asset_id=asset["id"], discovery_source="Scanner")
+        row = check("POST", 5007, "/vulnerabilities", 201, json=body)
+        assert row["asset_name"] == asset["name"] and row["status"] == "Open"
+        path = f'/vulnerabilities/{row["id"]}'
+        for field, value in [("cve_id", "bad"), ("severity", "Low"), ("cvss_score", -1), ("cvss_score", True), ("asset_id", "1")]:
+            check("POST", 5007, "/vulnerabilities", 422, json={**body, field: value})
+        check("POST", 5007, "/vulnerabilities", 404, json={**body, "asset_id": 999999})
+        for role in ["admin", "analyst", "auditor"]:
+            check("GET", 5007, "/vulnerabilities", role=role)
+            check("GET", 5007, path, role=role)
+        check("PUT", 5007, path, 422, json={"status": "Closed"})
+        check("PUT", 5007, path, 422, json={"cvss_score": 2})
+        check("PUT", 5007, path, json={"description": "Updated", "cvss_score": 7.5, "severity": "High"}, role="analyst")
+        for status in ["Under Investigation", "In Progress", "Resolved", "Closed"]:
+            updated = check("PUT", 5007, path, json={"status": status}, role="analyst")
+            assert updated["status"] == status
+            if status in ("Resolved", "Closed"):
+                assert updated["resolved_at"]
+        found = check("GET", 5007, "/vulnerabilities/search", params={"cve_id": body["cve_id"], "severity": "High", "asset_id": asset["id"], "status": "Closed"})
+        assert any(item["id"] == row["id"] for item in found["vulnerabilities"])
+        check("GET", 5007, "/vulnerabilities/999999", 404)
+        check("GET", 5007, "/vulnerabilities", 403, role="employee")
+        check("GET", 5007, "/vulnerabilities", 401, role=None)
+        check("DELETE", 5007, path, 403, role="analyst")
+        check("DELETE", 5007, path)
+        check("GET", 5007, path, 404)
+        notifications = check("GET", 5008, "/notifications/search")
+        assert any(item["notification_type"] == "Vulnerability Alert" for item in notifications["notifications"])
     print("Live checks passed")
 
 
