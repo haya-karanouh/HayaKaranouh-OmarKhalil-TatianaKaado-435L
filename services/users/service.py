@@ -1,12 +1,15 @@
 """Business logic for users service."""
 
 import bcrypt
+from datetime import datetime
 from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
+from werkzeug.exceptions import Unauthorized
 
-from common.constants import EMPLOYEE, USER_CREATED
+from common.auth import create_token
+from common.constants import EMPLOYEE, LOGIN_FAILED, LOGIN_SUCCESS, USER_CREATED
 from common.db import db
-from common.errors import ConflictError, ValidationError
+from common.errors import ConflictError, PermissionDenied, ValidationError
 from common.models import User
 from common.service_client import log_event
 from common.validators import require_fields, strong_password, valid_email
@@ -46,6 +49,29 @@ class UsersService:
             raise ConflictError("username or email is already registered") from error
         log_event(user.id, USER_CREATED, f"Created user {user.username}", "Information", "users")
         return self.serialize(user)
+
+    def login(self, data):
+        require_fields(data, {"password"}, {"username", "email", "password"})
+        identifier = data.get("username") or data.get("email")
+        if not identifier:
+            raise ValidationError("username or email is required")
+        user = db.session.query(User).filter(
+            or_(User.username == identifier, User.email == identifier)
+        ).first()
+        password_matches = user is not None and bcrypt.checkpw(
+            data["password"].encode("utf-8"), user.password_hash.encode("utf-8")
+        )
+        if not password_matches:
+            log_event(user.id if user else None, LOGIN_FAILED, "Failed login attempt", "Warning", "users")
+            raise Unauthorized("Invalid username/email or password")
+        if user.account_status != "Active":
+            log_event(user.id, LOGIN_FAILED, f"Login denied for {user.account_status.lower()} account", "Warning", "users")
+            raise PermissionDenied("This account is inactive or suspended")
+
+        user.last_login = datetime.utcnow()
+        db.session.commit()
+        log_event(user.id, LOGIN_SUCCESS, f"User {user.username} logged in", "Information", "users")
+        return {"token": create_token(user), "user": self.serialize(user)}
 
     @staticmethod
     def serialize(user):

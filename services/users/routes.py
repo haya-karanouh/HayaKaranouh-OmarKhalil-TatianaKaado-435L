@@ -33,6 +33,13 @@ def register():
     return success_response("User registered", service.register(data, actor), 201)
 
 
+@blueprint.post("/users/login")
+def login():
+    """Author: Haya Karanouh. Authenticate a user and return a JWT."""
+    data = require_json_body({"username", "email", "password"})
+    return success_response("Login successful", service.login(data))
+
+
 @blueprint.get("/health")
 def health():
     """Author: Haya Karanouh. Return users service health."""
