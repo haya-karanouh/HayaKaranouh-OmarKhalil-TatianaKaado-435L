@@ -51,3 +51,9 @@ def get(vulnerability_id):
 def update(vulnerability_id):
     """Author: Tatiana Kaado. Update permitted fields and advance status."""
     return success_response("Vulnerability updated", service.update(vulnerability_id, require_json_body(), g.user))
+
+@blueprint.get("/vulnerabilities/search")
+@require_roles(ADMIN, ANALYST, AUDITOR)
+def search():
+    """Author: Tatiana Kaado. Search CVE, severity, asset and status."""
+    return success_response("Vulnerabilities retrieved", {"vulnerabilities": service.list(request.args)})
