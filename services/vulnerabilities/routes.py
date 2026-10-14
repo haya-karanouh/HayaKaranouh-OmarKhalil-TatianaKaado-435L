@@ -1,6 +1,10 @@
 """HTTP routes for the vulnerabilities service."""
 
-from flask import Blueprint
+from flask import Blueprint, g, request
+from common.auth import require_roles
+from common.constants import ADMIN, ANALYST, AUDITOR
+from common.validators import require_json_body
+from werkzeug.exceptions import BadRequest
 
 from common.errors import success_response
 from services.vulnerabilities.service import VulnerabilitiesService
@@ -11,5 +15,21 @@ service = VulnerabilitiesService()
 
 @blueprint.get("/health")
 def health():
-    """Author: Haya Karanouh. Return vulnerabilities service health."""
+    """Author: Tatiana Kaado. Return vulnerabilities service health."""
     return success_response("vulnerabilities service is healthy", service.health())
+
+
+@blueprint.before_request
+def check_json():
+    if request.is_json:
+        try:
+            request.get_json()
+        except BadRequest:
+            raise BadRequest("Malformed JSON body")
+
+
+@blueprint.post("/vulnerabilities")
+@require_roles(ADMIN)
+def create():
+    """Author: Tatiana Kaado. Create a validated vulnerability."""
+    return success_response("Vulnerability created", service.create(require_json_body(), g.user), 201)
