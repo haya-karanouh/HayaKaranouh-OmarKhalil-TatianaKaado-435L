@@ -1,6 +1,6 @@
 """HTTP routes for the logs service."""
 
-from flask import Blueprint, request
+from flask import Blueprint, g, request
 
 from common.auth import require_roles
 from common.constants import ADMIN, ANALYST, AUDITOR, SERVICE
@@ -50,6 +50,13 @@ def logs_for_user(user_id):
     logs = service.logs_for_user(user_id)
     message = "Logs retrieved" if logs else "No logs found for this user"
     return success_response(message, {"logs": logs})
+
+
+@blueprint.delete("/logs/<int:log_id>")
+@require_roles(ADMIN)
+def delete_log(log_id):
+    """Author: Haya Karanouh. Delete an audit record as an administrator."""
+    return success_response("Log deleted", service.delete_log(log_id, g.user))
 
 
 @blueprint.get("/health")

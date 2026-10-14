@@ -3,10 +3,11 @@
 from datetime import datetime
 
 from common.config import SERVICE_PORTS
-from common.constants import LOG_ACTIONS, LOG_SEVERITIES
+from common.constants import DATA_DELETED, LOG_ACTIONS, LOG_SEVERITIES
 from common.db import db
 from common.errors import NotFoundError, ValidationError
 from common.models import Log, User
+from common.service_client import log_event
 from common.validators import require_fields, valid_enum
 
 
@@ -88,6 +89,15 @@ class LogsService:
             Log.timestamp.desc(), Log.id.desc()
         ).all()
         return [self.serialize(record) for record in records]
+
+    def delete_log(self, log_id, actor):
+        record = db.session.get(Log, log_id)
+        if record is None:
+            raise NotFoundError("Log not found")
+        db.session.delete(record)
+        db.session.commit()
+        log_event(actor["user_id"], DATA_DELETED, f"Deleted audit log {log_id}", "Warning", "logs")
+        return {"id": log_id}
 
     @staticmethod
     def serialize(record):
