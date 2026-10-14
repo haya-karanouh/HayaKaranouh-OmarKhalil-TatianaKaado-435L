@@ -6,7 +6,7 @@ from werkzeug.exceptions import ServiceUnavailable
 
 from common.config import SERVICE_URLS
 from common.constants import (
-    ADMIN, ANALYST, AUDITOR, DATA_CREATED, EMPLOYEE, INCIDENT_SEVERITIES,
+    ADMIN, ANALYST, AUDITOR, DATA_CREATED, DATA_DELETED, EMPLOYEE, INCIDENT_SEVERITIES,
     NOTIFICATION_STATUSES, NOTIFICATION_TYPES, SERVICE, STATUS_CHANGED,
 )
 from common.db import db
@@ -106,6 +106,15 @@ class NotificationsService:
                 query = query.filter(getattr(Notification, field) == value)
         notifications = query.order_by(Notification.created_at.desc(), Notification.id.desc()).all()
         return [self.serialize(notification) for notification in notifications]
+
+    def delete_notification(self, notification_id, actor):
+        notification = db.session.get(Notification, notification_id)
+        if notification is None:
+            raise NotFoundError("Notification not found")
+        db.session.delete(notification)
+        db.session.commit()
+        log_event(actor.get("user_id"), DATA_DELETED, f"Deleted notification {notification_id}", "Warning", "notifications")
+        return {"id": notification_id}
 
     @staticmethod
     def serialize(notification):

@@ -53,6 +53,13 @@ def search_notifications():
     return success_response("Notifications retrieved", {"notifications": service.search(request.args.to_dict())})
 
 
+@blueprint.delete("/notifications/<int:notification_id>")
+@require_roles(ADMIN)
+def delete_notification(notification_id):
+    """Author: Haya Karanouh. Delete a notification as an administrator."""
+    return success_response("Notification deleted", service.delete_notification(notification_id, g.user))
+
+
 @blueprint.get("/health")
 def health():
     """Author: Haya Karanouh. Return notifications service health."""
