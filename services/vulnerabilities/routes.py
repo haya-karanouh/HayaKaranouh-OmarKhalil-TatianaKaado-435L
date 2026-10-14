@@ -39,3 +39,9 @@ def create():
 def list_vulnerabilities():
     """Author: Tatiana Kaado. List vulnerabilities with linked asset details."""
     return success_response("Vulnerabilities retrieved", {"vulnerabilities": service.list()})
+
+@blueprint.get("/vulnerabilities/<int:vulnerability_id>")
+@require_roles(ADMIN, ANALYST, AUDITOR)
+def get(vulnerability_id):
+    """Author: Tatiana Kaado. Retrieve a vulnerability and its asset."""
+    return success_response("Vulnerability retrieved", service.get(vulnerability_id))

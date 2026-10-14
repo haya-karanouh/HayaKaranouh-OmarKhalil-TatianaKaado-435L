@@ -106,3 +106,14 @@ class VulnerabilitiesService:
         rows = query.order_by(Vulnerability.id).all()
         assets = self.assets() if rows else {}
         return [self.serialize(row, assets) for row in rows]
+
+    @staticmethod
+    def find(vulnerability_id):
+        row = db.session.get(Vulnerability, vulnerability_id)
+        if row is None:
+            raise NotFoundError("Vulnerability not found")
+        return row
+
+    def get(self, vulnerability_id):
+        row = self.find(vulnerability_id)
+        return self.serialize(row, self.assets())
