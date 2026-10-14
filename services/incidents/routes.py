@@ -44,3 +44,10 @@ def get(incident_id):
 def assign(incident_id):
     """Author: Omar Khalil. Incident assigned."""
     return success_response('Incident assigned', service.assign(incident_id, require_json_body(), g.user))
+
+
+@blueprint.put('/incidents/<int:incident_id>/status')
+@require_roles(ADMIN, ANALYST)
+def status(incident_id):
+    """Author: Omar Khalil. Incident status changed."""
+    return success_response('Incident status changed', service.status(incident_id, require_json_body(), g.user))
