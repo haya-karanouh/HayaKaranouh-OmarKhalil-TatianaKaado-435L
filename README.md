@@ -1,6 +1,6 @@
 # Security Incident Detection and Response Management System
 
-Backend foundation for nine independent Flask services. Each service has its own process and port, communicates with peers over HTTP, and uses the same SQLAlchemy models and database. Users, Audit Logs, and Notifications endpoints are implemented; the other services currently expose only `GET /health`.
+Backend foundation for nine independent Flask services. Each service has its own process and port, communicates with peers over HTTP, and uses the same SQLAlchemy models and database. Users, Assets, Incidents, Audit Logs, Notifications, and Playbooks endpoints are implemented; Threats, Reports, and Vulnerabilities currently expose only `GET /health`.
 
 ## Requirements
 
@@ -76,6 +76,29 @@ Notifications (`5008`):
 - `PUT /notifications/{id}/read` allows Administrators, Analysts, and Employees, subject to owner checks. `GET /notifications/search` allows Administrators, Analysts, and Auditors. `DELETE /notifications/{id}` is Administrator-only.
 
 The Postman collection is [postman/HayaKaranouh.postman_collection.json](postman/HayaKaranouh.postman_collection.json). Run its Authentication and token setup folder first; it saves JWTs as collection variables. Each implemented endpoint has success, validation, not-found/empty-result, wrong-role, and missing-token examples, with explanations where a category does not apply to a collection or bodyless route.
+
+### Omar Khalil: Assets, Incidents and Playbooks
+
+Assets (`5002`) support administrator creation, update and deletion; administrator/auditor listing; and administrator/analyst/auditor detail and search. Creation validates IPv4, asset type, criticality and status, and verifies the owner through Users over HTTP. Location is optional and defaults to `Unspecified`. Search supports partial `name` and exact `asset_type`, `ip_address`, `department`, `criticality`, combined with AND. Details retrieve incident IDs and vulnerabilities over HTTP; unavailable related endpoints return empty lists. Deleting a referenced asset returns 409.
+
+Incidents (`5003`) support administrator/employee creation with reporter identity from the JWT, administrator/auditor listing with an optional `asset_id` filter, and details restricted by assignment or reporter ownership. Administrators assign verified Security Analysts with `PUT /incidents/{id}/assign`. Administrators and assigned analysts advance `PUT /incidents/{id}/status` through `Open → Under Investigation → Mitigated → Resolved → Closed`, and add `POST /incidents/{id}/notes`. Skips, backwards moves and terminal-state repeats return 422 with the allowed next status. Resolution sets `resolved_at`; assignment notifies the analyst and transitions notify the reporter.
+
+Playbooks (`5009`) support administrator creation/deletion and administrator/analyst/auditor listing/details. Administrators and analysts add `POST /playbooks/{id}/actions` with positive, unique step numbers (duplicates return 409), and advance `PUT /actions/{id}/status` through `Pending → In Progress → Completed`. Lower steps must be Completed before an action starts, and completion sets `completed_at`. Playbook deletion cascades to actions; audit events preserve execution history.
+
+All mutation routes submit audit events through the shared HTTP logging helper. Seed data includes four assets, incidents at all four severities, and two playbooks with three actions each. Re-running the seed inserts no duplicate sample records.
+
+Import [postman/OmarKhalil.postman_collection.json](postman/OmarKhalil.postman_collection.json) and run its folders in order against the seeded database. It logs in each role, saves fresh IDs, covers all 18 endpoints and includes independent full incident and playbook workflows. Bodyless and collection endpoints explain when an input-validation or missing-record case is inapplicable.
+
+With all services running, run the HTTP regression checks and replay the collection:
+
+```sh
+python -m scripts.omar_http_checks --service assets
+python -m scripts.omar_http_checks --service incidents
+python -m scripts.omar_http_checks --service playbooks
+python -m scripts.check_omar_postman
+```
+
+Capture Omar's evidence with `python -m scripts.evidence.omar_khalil_evidence`. It checks all nine health endpoints before resetting/seeding the development database, logs in through the real login API, and asserts actual HTTP status codes before continuing. Screenshots and two-sentence explanations are written to `evidence/Omar_Khalil/`, including every table's structure/foreign keys and authored Git history. Repeated captures append numbered images, so use a fresh output folder if only one run is desired.
 
 ## Evidence tooling
 
