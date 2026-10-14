@@ -70,6 +70,21 @@ def main():
         check("GET", 5007, path, 404)
         notifications = check("GET", 5008, "/notifications/search")
         assert any(item["notification_type"] == "Vulnerability Alert" for item in notifications["notifications"])
+    elif sys.argv[-1] == "reports":
+        for name in ["summary", "incidents", "assets", "threats", "vulnerabilities", "activity"]:
+            path = f"/reports/{name}"
+            check("GET", 5006, path)
+            check("GET", 5006, path, role="auditor")
+            check("GET", 5006, path, 403, role="analyst")
+            check("GET", 5006, path, 403, role="employee")
+            check("GET", 5006, path, 401, role=None)
+            check("GET", 5006, path, 422, params={"unexpected": "1"})
+        from common.auth import create_token
+        from common.constants import SERVICE
+        tokens["service"] = create_token({"id": None, "username": "internal", "role": SERVICE})
+        check("GET", 5006, "/reports/summary", 403, role="service")
+    else:
+        raise SystemExit("Choose threats, vulnerabilities, or reports")
     print("Live checks passed")
 
 
