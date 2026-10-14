@@ -63,3 +63,7 @@ class ReportsService:
     def assets(self):
         rows = self.fetch("assets")
         return {"total": len(rows), "critical_assets": sum(row["criticality"] == "Critical" for row in rows), "by_type": self.counts(rows, "asset_type")}
+
+    def threats(self):
+        rows = self.fetch("threats")
+        return {"total": len(rows), "by_severity": self.counts(rows, "severity"), "by_type": self.counts(rows, "threat_type"), "recent": self.recent(rows, "date_added", 5)}

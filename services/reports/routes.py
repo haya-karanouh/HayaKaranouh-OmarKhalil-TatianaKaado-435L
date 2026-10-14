@@ -36,3 +36,10 @@ def incidents():
 def assets():
     """Author: Tatiana Kaado. Generate the assets report from HTTP sources."""
     return success_response("assets report generated", service.generate("assets", g.user, request.args))
+
+
+@blueprint.get("/reports/threats")
+@require_roles(ADMIN, AUDITOR)
+def threats():
+    """Author: Tatiana Kaado. Generate the threats report from HTTP sources."""
+    return success_response("threats report generated", service.generate("threats", g.user, request.args))
