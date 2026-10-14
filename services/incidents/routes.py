@@ -23,3 +23,10 @@ def health():
 def create():
     """Author: Omar Khalil. Incident created."""
     return success_response('Incident created', service.create(require_json_body(), g.user), 201)
+
+
+@blueprint.get('/incidents')
+@require_roles(ADMIN, AUDITOR)
+def list_incidents():
+    """Author: Omar Khalil. Incidents retrieved."""
+    return success_response('Incidents retrieved', {'incidents': service.list(request.args)})
