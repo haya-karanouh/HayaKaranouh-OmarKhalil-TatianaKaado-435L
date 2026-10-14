@@ -89,3 +89,17 @@ class ThreatsService:
 
     def get(self, threat_id):
         return self.serialize(self.find(threat_id))
+
+    def update(self, threat_id, data, actor):
+        from common.constants import DATA_UPDATED
+        row = self.find(threat_id)
+        require_fields(data, set(), {"description", "severity", "source"})
+        self.validate(data)
+        admins = self.admins() if data.get("severity") == "Critical" and row.severity != "Critical" else []
+        for field, value in data.items():
+            setattr(row, field, value)
+        db.session.commit()
+        log_event(actor["user_id"], DATA_UPDATED, f"Updated threat {row.id}: {sorted(data)}", "Information", "threats")
+        for admin in admins:
+            notify(admin["id"], "Critical threat", f"Threat {row.id}: {row.threat_value}", "Threat Alert", "Critical")
+        return self.serialize(row)

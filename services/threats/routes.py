@@ -51,3 +51,9 @@ def get(threat_id):
 def search():
     """Author: Tatiana Kaado. Search threats with combined filters."""
     return success_response("Threats retrieved", {"threats": service.list(request.args)})
+
+@blueprint.put("/threats/<int:threat_id>")
+@require_roles(ADMIN)
+def update(threat_id):
+    """Author: Tatiana Kaado. Update description, severity and source."""
+    return success_response("Threat updated", service.update(threat_id, require_json_body(), g.user))
