@@ -1,0 +1,184 @@
+- **01_omar_khalil_post_assets_creates_a_low_criticalit.png**: Omar Khalil – POST /assets – Creates a Low criticality Workstation
+  - This request creates a low criticality workstation. The live response demonstrates HTTP 201 and the shared status/message/data or error envelope.
+- **02_omar_khalil_post_assets_creates_a_medium_critica.png**: Omar Khalil – POST /assets – Creates a Medium criticality Application
+  - This request creates a medium criticality application. The live response demonstrates HTTP 201 and the shared status/message/data or error envelope.
+- **03_omar_khalil_post_assets_creates_a_high_criticali.png**: Omar Khalil – POST /assets – Creates a High criticality Server
+  - This request creates a high criticality server. The live response demonstrates HTTP 201 and the shared status/message/data or error envelope.
+- **04_omar_khalil_post_assets_creates_a_critical_criti.png**: Omar Khalil – POST /assets – Creates a Critical criticality Database
+  - This request creates a critical criticality database. The live response demonstrates HTTP 201 and the shared status/message/data or error envelope.
+- **05_omar_khalil_assets_table_shows_stored_criticalit.png**: Omar Khalil – assets table – Shows stored criticality values
+  - Criticality is stored as one of Low, Medium, High or Critical in the shared SQLAlchemy enum column. SQLite enforces the enum using a CHECK constraint, while the API validates the value before insertion.
+- **06_omar_khalil_post_assets_rejects_an_invalid_ipv4_.png**: Omar Khalil – POST /assets – Rejects an invalid IPv4 address
+  - This request rejects an invalid ipv4 address. The live response demonstrates HTTP 422 and the shared status/message/data or error envelope.
+- **07_omar_khalil_post_assets_rejects_invalid_critical.png**: Omar Khalil – POST /assets – Rejects invalid criticality
+  - This request rejects invalid criticality. The live response demonstrates HTTP 422 and the shared status/message/data or error envelope.
+- **08_omar_khalil_post_assets_rejects_a_missing_name.png**: Omar Khalil – POST /assets – Rejects a missing name
+  - This request rejects a missing name. The live response demonstrates HTTP 422 and the shared status/message/data or error envelope.
+- **09_omar_khalil_get_assets_id_shows_the_asset_before.png**: Omar Khalil – GET /assets/{id} – Shows the asset before update
+  - This request shows the asset before update. The live response demonstrates HTTP 200 and the shared status/message/data or error envelope.
+- **10_omar_khalil_put_assets_id_updates_name_and_criti.png**: Omar Khalil – PUT /assets/{id} – Updates name and criticality
+  - This request updates name and criticality. The live response demonstrates HTTP 200 and the shared status/message/data or error envelope.
+- **11_omar_khalil_assets_table_shows_the_committed_upd.png**: Omar Khalil – assets table – Shows the committed update
+  - The update changes only permitted fields and commits before returning success. This parameterized query confirms the new name and criticality persisted in SQLite.
+- **12_omar_khalil_post_assets_creates_a_deletable_asse.png**: Omar Khalil – POST /assets – Creates a deletable asset
+  - This request creates a deletable asset. The live response demonstrates HTTP 201 and the shared status/message/data or error envelope.
+- **13_omar_khalil_delete_assets_id_denies_analyst_dele.png**: Omar Khalil – DELETE /assets/{id} – Denies analyst deletion
+  - The shared require_roles decorator verifies the JWT and checks the Security Administrator role before calling business logic. An analyst receives 403, so the deletion never executes; unauthorized access is submitted to the audit service.
+- **14_omar_khalil_delete_assets_id_deletes_an_unrefere.png**: Omar Khalil – DELETE /assets/{id} – Deletes an unreferenced asset
+  - This request deletes an unreferenced asset. The live response demonstrates HTTP 200 and the shared status/message/data or error envelope.
+- **15_omar_khalil_get_assets_lists_assets_in_the_share.png**: Omar Khalil – GET /assets – Lists assets in the shared JSON envelope
+  - The response is a JSON object containing status, message and data. The data.assets array contains serialized asset objects with identifiers, owner IDs, criticality and status, rather than bare database rows.
+- **16_omar_khalil_get_assets_id_includes_http_linked_i.png**: Omar Khalil – GET /assets/{id} – Includes HTTP-linked incident and vulnerability records
+  - Asset details include related_incident_ids and related_vulnerabilities obtained through HTTP calls to their owning services. A missing or unavailable vulnerabilities endpoint produces an empty related list while asset retrieval still succeeds.
+- **17_omar_khalil_get_assets_id_rejects_an_unknown_ass.png**: Omar Khalil – GET /assets/{id} – Rejects an unknown asset ID
+  - This request rejects an unknown asset id. The live response demonstrates HTTP 404 and the shared status/message/data or error envelope.
+- **18_omar_khalil_get_assets_search_filters_by_name.png**: Omar Khalil – GET /assets/search – Filters by name
+  - The name filter is applied to the asset query; name uses a literal partial match and other filters use equality. When multiple filters are supplied they combine with AND, and results remain in the data.assets array.
+- **19_omar_khalil_get_assets_search_filters_by_asset_t.png**: Omar Khalil – GET /assets/search – Filters by asset_type
+  - The asset_type filter is applied to the asset query; name uses a literal partial match and other filters use equality. When multiple filters are supplied they combine with AND, and results remain in the data.assets array.
+- **20_omar_khalil_get_assets_search_filters_by_ip_addr.png**: Omar Khalil – GET /assets/search – Filters by ip_address
+  - The ip_address filter is applied to the asset query; name uses a literal partial match and other filters use equality. When multiple filters are supplied they combine with AND, and results remain in the data.assets array.
+- **21_omar_khalil_get_assets_search_filters_by_departm.png**: Omar Khalil – GET /assets/search – Filters by department
+  - The department filter is applied to the asset query; name uses a literal partial match and other filters use equality. When multiple filters are supplied they combine with AND, and results remain in the data.assets array.
+- **22_omar_khalil_get_assets_search_filters_by_critica.png**: Omar Khalil – GET /assets/search – Filters by criticality
+  - The criticality filter is applied to the asset query; name uses a literal partial match and other filters use equality. When multiple filters are supplied they combine with AND, and results remain in the data.assets array.
+- **23_omar_khalil_get_assets_denies_employee_asset_acc.png**: Omar Khalil – GET /assets – Denies employee asset access
+  - This request denies employee asset access. The live response demonstrates HTTP 403 and the shared status/message/data or error envelope.
+- **24_omar_khalil_post_incidents_creates_a_low_severit.png**: Omar Khalil – POST /incidents – Creates a Low severity incident
+  - A suspicious message was blocked on an isolated workstation without execution or data exposure. This impact and scope justify the Low severity; the reporter ID is taken from the authenticated employee token and status starts Open.
+- **25_omar_khalil_post_incidents_creates_a_medium_seve.png**: Omar Khalil – POST /incidents – Creates a Medium severity incident
+  - A delivered phishing message exposes one mailbox and needs investigation, with no confirmed compromise. This impact and scope justify the Medium severity; the reporter ID is taken from the authenticated employee token and status starts Open.
+- **26_omar_khalil_post_incidents_creates_a_high_severi.png**: Omar Khalil – POST /incidents – Creates a High severity incident
+  - Malware execution on a production server threatens service availability and requires urgent containment. This impact and scope justify the High severity; the reporter ID is taken from the authenticated employee token and status starts Open.
+- **27_omar_khalil_post_incidents_creates_a_critical_se.png**: Omar Khalil – POST /incidents – Creates a Critical severity incident
+  - Confirmed customer data leakage threatens organization-wide confidentiality and requires immediate response. This impact and scope justify the Critical severity; the reporter ID is taken from the authenticated employee token and status starts Open.
+- **28_omar_khalil_incidents_table_shows_incidents_acro.png**: Omar Khalil – incidents table – Shows incidents across four severities
+  - Severity records impact and urgency separately from lifecycle status. Low and Medium examples have limited or unconfirmed impact, while High threatens production availability and Critical represents confirmed customer data exposure.
+- **29_omar_khalil_post_incidents_rejects_invalid_sever.png**: Omar Khalil – POST /incidents – Rejects invalid severity
+  - This request rejects invalid severity. The live response demonstrates HTTP 422 and the shared status/message/data or error envelope.
+- **30_omar_khalil_post_incidents_rejects_missing_requi.png**: Omar Khalil – POST /incidents – Rejects missing required fields
+  - This request rejects missing required fields. The live response demonstrates HTTP 422 and the shared status/message/data or error envelope.
+- **31_omar_khalil_get_incidents_lists_status_and_assig.png**: Omar Khalil – GET /incidents – Lists status and assigned analyst IDs
+  - This request lists status and assigned analyst ids. The live response demonstrates HTTP 200 and the shared status/message/data or error envelope.
+- **32_omar_khalil_get_incidents_id_retrieves_incident_.png**: Omar Khalil – GET /incidents/{id} – Retrieves incident details and notes
+  - This request retrieves incident details and notes. The live response demonstrates HTTP 200 and the shared status/message/data or error envelope.
+- **33_omar_khalil_get_incidents_id_rejects_an_unknown_.png**: Omar Khalil – GET /incidents/{id} – Rejects an unknown incident ID
+  - This request rejects an unknown incident id. The live response demonstrates HTTP 404 and the shared status/message/data or error envelope.
+- **34_omar_khalil_put_incidents_id_assign_denies_assig.png**: Omar Khalil – PUT /incidents/{id}/assign – Denies assignment by an analyst
+  - This request denies assignment by an analyst. The live response demonstrates HTTP 403 and the shared status/message/data or error envelope.
+- **35_omar_khalil_put_incidents_id_assign_rejects_assi.png**: Omar Khalil – PUT /incidents/{id}/assign – Rejects assignment to a non-analyst
+  - This request rejects assignment to a non-analyst. The live response demonstrates HTTP 422 and the shared status/message/data or error envelope.
+- **36_omar_khalil_put_incidents_id_assign_assigns_a_ve.png**: Omar Khalil – PUT /incidents/{id}/assign – Assigns a verified Security Analyst
+  - The users service confirms that the target has the Security Analyst role before assignment is committed. The operation logs INCIDENT_ASSIGNED and sends an Incident Assignment notification to that analyst.
+- **37_omar_khalil_incidents_table_shows_the_assigned_a.png**: Omar Khalil – incidents table – Shows the assigned analyst
+  - The assigned_analyst_id foreign key now references the verified analyst. This assignment also controls which analyst can retrieve the incident, add notes and advance its status.
+- **38_omar_khalil_put_incidents_id_status_rejects_open.png**: Omar Khalil – PUT /incidents/{id}/status – Rejects Open to Closed
+  - The lifecycle permits only the next status, so an Open incident cannot skip directly to Closed. The error names Under Investigation as the allowed next status and leaves the record Open.
+- **39_omar_khalil_put_incidents_id_status_advances_to_.png**: Omar Khalil – PUT /incidents/{id}/status – Advances to Under Investigation
+  - The assigned analyst advances the incident to Under Investigation through the next permitted lifecycle step. Each transition is logged and notifies the reporter; resolved_at is set on Resolved and preserved on Closed.
+- **40_omar_khalil_put_incidents_id_status_advances_to_.png**: Omar Khalil – PUT /incidents/{id}/status – Advances to Mitigated
+  - The assigned analyst advances the incident to Mitigated through the next permitted lifecycle step. Each transition is logged and notifies the reporter; resolved_at is set on Resolved and preserved on Closed.
+- **41_omar_khalil_put_incidents_id_status_advances_to_.png**: Omar Khalil – PUT /incidents/{id}/status – Advances to Resolved
+  - The assigned analyst advances the incident to Resolved through the next permitted lifecycle step. Each transition is logged and notifies the reporter; resolved_at is set on Resolved and preserved on Closed.
+- **42_omar_khalil_put_incidents_id_status_advances_to_.png**: Omar Khalil – PUT /incidents/{id}/status – Advances to Closed
+  - The assigned analyst advances the incident to Closed through the next permitted lifecycle step. Each transition is logged and notifies the reporter; resolved_at is set on Resolved and preserved on Closed.
+- **43_omar_khalil_post_incidents_id_notes_adds_an_auth.png**: Omar Khalil – POST /incidents/{id}/notes – Adds an authenticated investigation note
+  - This request adds an authenticated investigation note. The live response demonstrates HTTP 201 and the shared status/message/data or error envelope.
+- **44_omar_khalil_get_incidents_id_includes_the_stored.png**: Omar Khalil – GET /incidents/{id} – Includes the stored investigation note
+  - This request includes the stored investigation note. The live response demonstrates HTTP 200 and the shared status/message/data or error envelope.
+- **45_omar_khalil_investigation_notes_table_shows_note.png**: Omar Khalil – investigation_notes table – Shows note author and incident link
+  - Investigation notes reference both their incident and authenticated analyst. The content and creation timestamp form the investigation record returned with incident details.
+- **46_omar_khalil_get_incidents_id_denies_another_empl.png**: Omar Khalil – GET /incidents/{id} – Denies another employee access
+  - Regular employees can retrieve only incidents whose reporter_id matches the user ID in their token. The second employee did not report this incident, so the object-level permission check returns 403.
+- **47_omar_khalil_post_playbooks_creates_evidence_phis.png**: Omar Khalil – POST /playbooks – Creates Evidence Phishing Response
+  - This request creates evidence phishing response. The live response demonstrates HTTP 201 and the shared status/message/data or error envelope.
+- **48_omar_khalil_post_playbooks_creates_evidence_malw.png**: Omar Khalil – POST /playbooks – Creates Evidence Malware Response
+  - This request creates evidence malware response. The live response demonstrates HTTP 201 and the shared status/message/data or error envelope.
+- **49_omar_khalil_playbooks_table_shows_category_sever.png**: Omar Khalil – playbooks table – Shows category, severity and creator
+  - Each playbook records an incident category, severity and authenticated creator. Its actions are stored separately and reference the playbook through a foreign key.
+- **50_omar_khalil_get_playbooks_lists_response_playboo.png**: Omar Khalil – GET /playbooks – Lists response playbooks
+  - This request lists response playbooks. The live response demonstrates HTTP 200 and the shared status/message/data or error envelope.
+- **51_omar_khalil_get_playbooks_id_retrieves_playbook_.png**: Omar Khalil – GET /playbooks/{id} – Retrieves playbook details
+  - This request retrieves playbook details. The live response demonstrates HTTP 200 and the shared status/message/data or error envelope.
+- **52_omar_khalil_get_playbooks_id_rejects_an_unknown_.png**: Omar Khalil – GET /playbooks/{id} – Rejects an unknown playbook ID
+  - This request rejects an unknown playbook id. The live response demonstrates HTTP 404 and the shared status/message/data or error envelope.
+- **53_omar_khalil_post_playbooks_id_actions_adds_step_.png**: Omar Khalil – POST /playbooks/{id}/actions – Adds step 2
+  - This request adds step 2. The live response demonstrates HTTP 201 and the shared status/message/data or error envelope.
+- **54_omar_khalil_post_playbooks_id_actions_adds_step_.png**: Omar Khalil – POST /playbooks/{id}/actions – Adds step 1
+  - This request adds step 1. The live response demonstrates HTTP 201 and the shared status/message/data or error envelope.
+- **55_omar_khalil_post_playbooks_id_actions_adds_step_.png**: Omar Khalil – POST /playbooks/{id}/actions – Adds step 3
+  - This request adds step 3. The live response demonstrates HTTP 201 and the shared status/message/data or error envelope.
+- **56_omar_khalil_response_actions_table_shows_numeric.png**: Omar Khalil – response_actions table – Shows numeric execution order
+  - step_number determines execution order independently of insertion order or action ID. A unique constraint prevents duplicate step numbers within one playbook, and an action can start only after all lower-numbered steps are Completed.
+- **57_omar_khalil_get_playbooks_id_returns_actions_ord.png**: Omar Khalil – GET /playbooks/{id} – Returns actions ordered by step number
+  - This request returns actions ordered by step number. The live response demonstrates HTTP 200 and the shared status/message/data or error envelope.
+- **58_omar_khalil_post_playbooks_id_actions_rejects_a_.png**: Omar Khalil – POST /playbooks/{id}/actions – Rejects a duplicate step number
+  - This request rejects a duplicate step number. The live response demonstrates HTTP 409 and the shared status/message/data or error envelope.
+- **59_omar_khalil_put_actions_id_status_rejects_starti.png**: Omar Khalil – PUT /actions/{id}/status – Rejects starting step two before step one
+  - This request rejects starting step two before step one. The live response demonstrates HTTP 422 and the shared status/message/data or error envelope.
+- **60_omar_khalil_put_actions_id_status_advances_step_.png**: Omar Khalil – PUT /actions/{id}/status – Advances step 1 to In Progress
+  - Step 1 progresses from Pending through In Progress to Completed, with all lower steps completed before it starts. Every transition is submitted to audit logs, and Completed automatically records completed_at.
+- **61_omar_khalil_put_actions_id_status_advances_step_.png**: Omar Khalil – PUT /actions/{id}/status – Advances step 1 to Completed
+  - Step 1 progresses from Pending through In Progress to Completed, with all lower steps completed before it starts. Every transition is submitted to audit logs, and Completed automatically records completed_at.
+- **62_omar_khalil_put_actions_id_status_advances_step_.png**: Omar Khalil – PUT /actions/{id}/status – Advances step 2 to In Progress
+  - Step 2 progresses from Pending through In Progress to Completed, with all lower steps completed before it starts. Every transition is submitted to audit logs, and Completed automatically records completed_at.
+- **63_omar_khalil_put_actions_id_status_advances_step_.png**: Omar Khalil – PUT /actions/{id}/status – Advances step 2 to Completed
+  - Step 2 progresses from Pending through In Progress to Completed, with all lower steps completed before it starts. Every transition is submitted to audit logs, and Completed automatically records completed_at.
+- **64_omar_khalil_put_actions_id_status_advances_step_.png**: Omar Khalil – PUT /actions/{id}/status – Advances step 3 to In Progress
+  - Step 3 progresses from Pending through In Progress to Completed, with all lower steps completed before it starts. Every transition is submitted to audit logs, and Completed automatically records completed_at.
+- **65_omar_khalil_put_actions_id_status_advances_step_.png**: Omar Khalil – PUT /actions/{id}/status – Advances step 3 to Completed
+  - Step 3 progresses from Pending through In Progress to Completed, with all lower steps completed before it starts. Every transition is submitted to audit logs, and Completed automatically records completed_at.
+- **66_omar_khalil_delete_playbooks_id_denies_deletion_.png**: Omar Khalil – DELETE /playbooks/{id} – Denies deletion by an analyst
+  - This request denies deletion by an analyst. The live response demonstrates HTTP 403 and the shared status/message/data or error envelope.
+- **67_omar_khalil_get_playbooks_denies_employee_playbo.png**: Omar Khalil – GET /playbooks – Denies employee playbook access
+  - This request denies employee playbook access. The live response demonstrates HTTP 403 and the shared status/message/data or error envelope.
+- **68_omar_khalil_delete_playbooks_id_deletes_playbook.png**: Omar Khalil – DELETE /playbooks/{id} – Deletes playbook and cascades its actions
+  - Deleting a playbook invokes the response_actions foreign key ON DELETE CASCADE. The service logs the deleted playbook and each removed action, preserving execution history in the audit service.
+- **69_omar_khalil_response_actions_table_confirms_dele.png**: Omar Khalil – response_actions table – Confirms deleted playbook actions are absent
+  - The query returns no actions for the deleted playbook. This confirms the foreign key cascade removed the dependent actions rather than leaving orphan records.
+- **70_omar_khalil_logs_table_shows_real_mutation_and_l.png**: Omar Khalil – logs table – Shows real mutation and lifecycle audit events
+  - All three services submit create, update, delete and status changes to the logs API. These immutable entries retain action execution history even after a playbook and its actions are deleted.
+- **71_omar_khalil_notifications_table_shows_assignment.png**: Omar Khalil – notifications table – Shows assignment and reporter notifications
+  - Incident assignment creates an Incident Assignment notification for the selected analyst. Every status transition creates a System Notification for the original reporter through the notifications service.
+- **72_omar_khalil_assets_structure_shows_database_desi.png**: Omar Khalil – assets Structure – Shows database design
+  - This is the actual SQLite structure metadata for the assets table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **73_omar_khalil_assets_foreign_keys_shows_database_d.png**: Omar Khalil – assets Foreign keys – Shows database design
+  - This is the actual SQLite foreign keys metadata for the assets table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **74_omar_khalil_incidents_structure_shows_database_d.png**: Omar Khalil – incidents Structure – Shows database design
+  - This is the actual SQLite structure metadata for the incidents table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **75_omar_khalil_incidents_foreign_keys_shows_databas.png**: Omar Khalil – incidents Foreign keys – Shows database design
+  - This is the actual SQLite foreign keys metadata for the incidents table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **76_omar_khalil_investigation_notes_structure_shows_.png**: Omar Khalil – investigation_notes Structure – Shows database design
+  - This is the actual SQLite structure metadata for the investigation_notes table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **77_omar_khalil_investigation_notes_foreign_keys_sho.png**: Omar Khalil – investigation_notes Foreign keys – Shows database design
+  - This is the actual SQLite foreign keys metadata for the investigation_notes table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **78_omar_khalil_logs_structure_shows_database_design.png**: Omar Khalil – logs Structure – Shows database design
+  - This is the actual SQLite structure metadata for the logs table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **79_omar_khalil_logs_foreign_keys_shows_database_des.png**: Omar Khalil – logs Foreign keys – Shows database design
+  - This is the actual SQLite foreign keys metadata for the logs table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **80_omar_khalil_notifications_structure_shows_databa.png**: Omar Khalil – notifications Structure – Shows database design
+  - This is the actual SQLite structure metadata for the notifications table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **81_omar_khalil_notifications_foreign_keys_shows_dat.png**: Omar Khalil – notifications Foreign keys – Shows database design
+  - This is the actual SQLite foreign keys metadata for the notifications table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **82_omar_khalil_playbooks_structure_shows_database_d.png**: Omar Khalil – playbooks Structure – Shows database design
+  - This is the actual SQLite structure metadata for the playbooks table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **83_omar_khalil_playbooks_foreign_keys_shows_databas.png**: Omar Khalil – playbooks Foreign keys – Shows database design
+  - This is the actual SQLite foreign keys metadata for the playbooks table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **84_omar_khalil_response_actions_structure_shows_dat.png**: Omar Khalil – response_actions Structure – Shows database design
+  - This is the actual SQLite structure metadata for the response_actions table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **85_omar_khalil_response_actions_foreign_keys_shows_.png**: Omar Khalil – response_actions Foreign keys – Shows database design
+  - This is the actual SQLite foreign keys metadata for the response_actions table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **86_omar_khalil_threats_structure_shows_database_des.png**: Omar Khalil – threats Structure – Shows database design
+  - This is the actual SQLite structure metadata for the threats table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **87_omar_khalil_threats_foreign_keys_shows_database_.png**: Omar Khalil – threats Foreign keys – Shows database design
+  - This is the actual SQLite foreign keys metadata for the threats table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **88_omar_khalil_users_structure_shows_database_desig.png**: Omar Khalil – users Structure – Shows database design
+  - This is the actual SQLite structure metadata for the users table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **89_omar_khalil_users_foreign_keys_shows_database_de.png**: Omar Khalil – users Foreign keys – Shows database design
+  - This is the actual SQLite foreign keys metadata for the users table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **90_omar_khalil_vulnerabilities_structure_shows_data.png**: Omar Khalil – vulnerabilities Structure – Shows database design
+  - This is the actual SQLite structure metadata for the vulnerabilities table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **91_omar_khalil_vulnerabilities_foreign_keys_shows_d.png**: Omar Khalil – vulnerabilities Foreign keys – Shows database design
+  - This is the actual SQLite foreign keys metadata for the vulnerabilities table. Column types, nullability and primary keys describe its structure; foreign keys describe dependencies and deletion behavior, with an empty list indicating no outgoing foreign keys.
+- **92_omar_khalil_github_history_shows_authored_implem.png**: Omar Khalil – GitHub history – Shows authored implementation commits
+  - This output comes directly from the local Git history filtered by author Omar Khalil. It shows separate endpoint commits and validation work; publishing those commits to GitHub depends on repository write access.

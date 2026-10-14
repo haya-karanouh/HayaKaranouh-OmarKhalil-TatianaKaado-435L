@@ -45,6 +45,8 @@ def main():
                 account_status=account_status,
             ))
         db.session.commit()
+        from database.omar_seed import seed_omar_data
+        seed_omar_data()
         print(f"Database ready. {len(USERS)} development users are available.")
 
 

@@ -1,6 +1,9 @@
 """HTTP routes for the assets service."""
 
-from flask import Blueprint
+from flask import Blueprint, g, request
+from common.auth import require_roles
+from common.constants import ADMIN, ANALYST, AUDITOR
+from common.validators import require_json_body
 
 from common.errors import success_response
 from services.assets.service import AssetsService
@@ -11,5 +14,47 @@ service = AssetsService()
 
 @blueprint.get("/health")
 def health():
-    """Author: Haya Karanouh. Return assets service health."""
+    """Author: Omar Khalil. Return assets service health."""
     return success_response("assets service is healthy", service.health())
+
+
+@blueprint.post('/assets')
+@require_roles(ADMIN)
+def create():
+    """Author: Omar Khalil. Asset created."""
+    return success_response('Asset created', service.create(require_json_body(), g.user), 201)
+
+
+@blueprint.put('/assets/<int:asset_id>')
+@require_roles(ADMIN)
+def update(asset_id):
+    """Author: Omar Khalil. Asset updated."""
+    return success_response('Asset updated', service.update(asset_id, require_json_body(), g.user))
+
+
+@blueprint.delete('/assets/<int:asset_id>')
+@require_roles(ADMIN)
+def delete(asset_id):
+    """Author: Omar Khalil. Asset deleted."""
+    return success_response('Asset deleted', service.delete(asset_id, g.user))
+
+
+@blueprint.get('/assets')
+@require_roles(ADMIN, AUDITOR)
+def list_assets():
+    """Author: Omar Khalil. Assets retrieved."""
+    return success_response('Assets retrieved', {'assets': service.list()})
+
+
+@blueprint.get('/assets/<int:asset_id>')
+@require_roles(ADMIN, ANALYST, AUDITOR)
+def get(asset_id):
+    """Author: Omar Khalil. Asset retrieved."""
+    return success_response('Asset retrieved', service.get(asset_id))
+
+
+@blueprint.get('/assets/search')
+@require_roles(ADMIN, ANALYST, AUDITOR)
+def search():
+    """Author: Omar Khalil. Assets retrieved."""
+    return success_response('Assets retrieved', {'assets': service.list(request.args)})

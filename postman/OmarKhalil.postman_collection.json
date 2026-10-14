@@ -1,0 +1,4294 @@
+{
+  "info": {
+    "name": "Omar Khalil – Assets, Incidents and Playbooks",
+    "description": "Omar Khalil – Run folders in order against a seeded development database. Authentication uses the real login API. Each endpoint includes success, invalid-input (or explicitly inapplicable bodyless variant), unknown-resource/route, wrong-role and missing-token cases. Repeat runs create fresh records and IDs are saved automatically.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "host",
+      "value": "127.0.0.1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication and setup",
+      "item": [
+        {
+          "name": "Login admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5001/users/login",
+            "description": "Omar Khalil – Logs in the seeded admin through the real API and saves its JWT.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Admin@1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "pm.collectionVariables.set(\"admin_token\", pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login analyst",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5001/users/login",
+            "description": "Omar Khalil – Logs in the seeded analyst through the real API and saves its JWT.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"analyst\",\n  \"password\": \"Analyst@1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "pm.collectionVariables.set(\"analyst_token\", pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login employee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5001/users/login",
+            "description": "Omar Khalil – Logs in the seeded employee through the real API and saves its JWT.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"employee\",\n  \"password\": \"Employee@1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "pm.collectionVariables.set(\"employee_token\", pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login auditor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5001/users/login",
+            "description": "Omar Khalil – Logs in the seeded auditor through the real API and saves its JWT.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"auditor\",\n  \"password\": \"Auditor@1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "pm.collectionVariables.set(\"auditor_token\", pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login employee2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5001/users/login",
+            "description": "Omar Khalil – Logs in the seeded employee2 through the real API and saves its JWT.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"employee2\",\n  \"password\": \"Employee@1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "pm.collectionVariables.set(\"employee2_token\", pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create disposable asset",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets",
+            "description": "Omar Khalil – Creates a separate unreferenced asset for deletion without disrupting incident tests.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Disposable Asset\",\n  \"asset_type\": \"Server\",\n  \"ip_address\": \"10.50.0.2\",\n  \"department\": \"Engineering\",\n  \"owner_id\": 3,\n  \"criticality\": \"High\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"disposable_asset_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "POST /assets",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets",
+            "description": "Omar Khalil – POST /assets: succeeds with the permitted role. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Production Server\",\n  \"asset_type\": \"Server\",\n  \"ip_address\": \"10.50.0.1\",\n  \"department\": \"Engineering\",\n  \"owner_id\": 3,\n  \"criticality\": \"High\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"asset_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets",
+            "description": "Omar Khalil – POST /assets: checks invalid input. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Production Server\",\n  \"asset_type\": \"Server\",\n  \"ip_address\": \"999.1.1.1\",\n  \"department\": \"Engineering\",\n  \"owner_id\": 3,\n  \"criticality\": \"High\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/not-a-route",
+            "description": "Omar Khalil – POST /assets: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Production Server\",\n  \"asset_type\": \"Server\",\n  \"ip_address\": \"10.50.0.1\",\n  \"department\": \"Engineering\",\n  \"owner_id\": 3,\n  \"criticality\": \"High\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets",
+            "description": "Omar Khalil – POST /assets: rejects a role without permission before executing business logic.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Production Server\",\n  \"asset_type\": \"Server\",\n  \"ip_address\": \"10.50.0.1\",\n  \"department\": \"Engineering\",\n  \"owner_id\": 3,\n  \"criticality\": \"High\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets",
+            "description": "Omar Khalil – POST /assets: rejects a request without the bearer token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Production Server\",\n  \"asset_type\": \"Server\",\n  \"ip_address\": \"10.50.0.1\",\n  \"department\": \"Engineering\",\n  \"owner_id\": 3,\n  \"criticality\": \"High\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PUT /assets/{id}",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/{{asset_id}}",
+            "description": "Omar Khalil – PUT /assets/{id}: succeeds with the permitted role. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"criticality\": \"Critical\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/{{asset_id}}",
+            "description": "Omar Khalil – PUT /assets/{id}: checks invalid input. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"criticality\": \"Extreme\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/999999",
+            "description": "Omar Khalil – PUT /assets/{id}: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"criticality\": \"Critical\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/{{asset_id}}",
+            "description": "Omar Khalil – PUT /assets/{id}: rejects a role without permission before executing business logic.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"criticality\": \"Critical\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/{{asset_id}}",
+            "description": "Omar Khalil – PUT /assets/{id}: rejects a request without the bearer token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"criticality\": \"Critical\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DELETE /assets/{id}",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/{{disposable_asset_id}}",
+            "description": "Omar Khalil – DELETE /assets/{id}: succeeds with the permitted role. This bodyless endpoint has no input-validation body; a malformed path ID returns 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/not-an-integer",
+            "description": "Omar Khalil – DELETE /assets/{id}: checks invalid input. This bodyless endpoint has no input-validation body; a malformed path ID returns 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/999999",
+            "description": "Omar Khalil – DELETE /assets/{id}: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/{{disposable_asset_id}}",
+            "description": "Omar Khalil – DELETE /assets/{id}: rejects a role without permission before executing business logic."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/{{disposable_asset_id}}",
+            "description": "Omar Khalil – DELETE /assets/{id}: rejects a request without the bearer token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GET /assets",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auditor_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets",
+            "description": "Omar Khalil – GET /assets: succeeds with the permitted role. This collection has no request-body validation or missing entity; unsupported PATCH returns 405."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auditor_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets",
+            "description": "Omar Khalil – GET /assets: checks invalid input. This collection has no request-body validation or missing entity; unsupported PATCH returns 405."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 405\", () => pm.response.to.have.status(405));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auditor_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/not-a-route",
+            "description": "Omar Khalil – GET /assets: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets",
+            "description": "Omar Khalil – GET /assets: rejects a role without permission before executing business logic."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets",
+            "description": "Omar Khalil – GET /assets: rejects a request without the bearer token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GET /assets/{id}",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/{{asset_id}}",
+            "description": "Omar Khalil – GET /assets/{id}: succeeds with the permitted role. A malformed path identifier cannot match the integer route and returns 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/not-an-integer",
+            "description": "Omar Khalil – GET /assets/{id}: checks invalid input. A malformed path identifier cannot match the integer route and returns 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/999999",
+            "description": "Omar Khalil – GET /assets/{id}: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/{{asset_id}}",
+            "description": "Omar Khalil – GET /assets/{id}: rejects a role without permission before executing business logic."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/{{asset_id}}",
+            "description": "Omar Khalil – GET /assets/{id}: rejects a request without the bearer token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GET /assets/search",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/search?name=Postman&department=Engineering",
+            "description": "Omar Khalil – GET /assets/search: succeeds with the permitted role. "
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/search?criticality=Extreme",
+            "description": "Omar Khalil – GET /assets/search: checks invalid input. "
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/search/not-a-route",
+            "description": "Omar Khalil – GET /assets/search: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/search?name=Postman&department=Engineering",
+            "description": "Omar Khalil – GET /assets/search: rejects a role without permission before executing business logic."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/search?name=Postman&department=Engineering",
+            "description": "Omar Khalil – GET /assets/search: rejects a request without the bearer token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Asset search filters",
+      "item": [
+        {
+          "name": "Search by name",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/search?name=Postman",
+            "description": "Omar Khalil – Filters assets by name; name is partial and combined filters use AND."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search by asset_type",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/search?asset_type=Server",
+            "description": "Omar Khalil – Filters assets by asset_type; name is partial and combined filters use AND."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search by ip_address",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/search?ip_address=10.50.0.1",
+            "description": "Omar Khalil – Filters assets by ip_address; name is partial and combined filters use AND."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search by department",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/search?department=Engineering",
+            "description": "Omar Khalil – Filters assets by department; name is partial and combined filters use AND."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search by criticality",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5002/assets/search?criticality=Critical",
+            "description": "Omar Khalil – Filters assets by criticality; name is partial and combined filters use AND."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "POST /incidents",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents",
+            "description": "Omar Khalil – POST /incidents: succeeds with the permitted role. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Postman phishing report\",\n  \"description\": \"Suspicious attachment delivered to a mailbox\",\n  \"category\": \"Phishing\",\n  \"severity\": \"Medium\",\n  \"asset_id\": {{asset_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"incident_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents",
+            "description": "Omar Khalil – POST /incidents: checks invalid input. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Postman phishing report\",\n  \"description\": \"Suspicious attachment delivered to a mailbox\",\n  \"category\": \"Phishing\",\n  \"severity\": \"Extreme\",\n  \"asset_id\": {{asset_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/not-a-route",
+            "description": "Omar Khalil – POST /incidents: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Postman phishing report\",\n  \"description\": \"Suspicious attachment delivered to a mailbox\",\n  \"category\": \"Phishing\",\n  \"severity\": \"Medium\",\n  \"asset_id\": {{asset_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents",
+            "description": "Omar Khalil – POST /incidents: rejects a role without permission before executing business logic.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Postman phishing report\",\n  \"description\": \"Suspicious attachment delivered to a mailbox\",\n  \"category\": \"Phishing\",\n  \"severity\": \"Medium\",\n  \"asset_id\": {{asset_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents",
+            "description": "Omar Khalil – POST /incidents: rejects a request without the bearer token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Postman phishing report\",\n  \"description\": \"Suspicious attachment delivered to a mailbox\",\n  \"category\": \"Phishing\",\n  \"severity\": \"Medium\",\n  \"asset_id\": {{asset_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GET /incidents",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auditor_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents?asset_id={{asset_id}}",
+            "description": "Omar Khalil – GET /incidents: succeeds with the permitted role. "
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auditor_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents?asset_id=invalid",
+            "description": "Omar Khalil – GET /incidents: checks invalid input. "
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auditor_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/not-a-route",
+            "description": "Omar Khalil – GET /incidents: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents?asset_id={{asset_id}}",
+            "description": "Omar Khalil – GET /incidents: rejects a role without permission before executing business logic."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents?asset_id={{asset_id}}",
+            "description": "Omar Khalil – GET /incidents: rejects a request without the bearer token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GET /incidents/{id}",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}",
+            "description": "Omar Khalil – GET /incidents/{id}: succeeds with the permitted role. Employees can view their own reports; another employee is rejected. Malformed path IDs return 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/not-an-integer",
+            "description": "Omar Khalil – GET /incidents/{id}: checks invalid input. Employees can view their own reports; another employee is rejected. Malformed path IDs return 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/999999",
+            "description": "Omar Khalil – GET /incidents/{id}: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee2_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}",
+            "description": "Omar Khalil – GET /incidents/{id}: rejects a role without permission before executing business logic."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}",
+            "description": "Omar Khalil – GET /incidents/{id}: rejects a request without the bearer token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PUT /incidents/{id}/assign",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}/assign",
+            "description": "Omar Khalil – PUT /incidents/{id}/assign: succeeds with the permitted role. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"analyst_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}/assign",
+            "description": "Omar Khalil – PUT /incidents/{id}/assign: checks invalid input. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"analyst_id\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/999999/assign",
+            "description": "Omar Khalil – PUT /incidents/{id}/assign: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"analyst_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}/assign",
+            "description": "Omar Khalil – PUT /incidents/{id}/assign: rejects a role without permission before executing business logic.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"analyst_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}/assign",
+            "description": "Omar Khalil – PUT /incidents/{id}/assign: rejects a request without the bearer token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"analyst_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PUT /incidents/{id}/status",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}/status",
+            "description": "Omar Khalil – PUT /incidents/{id}/status: succeeds with the permitted role. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Under Investigation\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}/status",
+            "description": "Omar Khalil – PUT /incidents/{id}/status: checks invalid input. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Closed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/999999/status",
+            "description": "Omar Khalil – PUT /incidents/{id}/status: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Under Investigation\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}/status",
+            "description": "Omar Khalil – PUT /incidents/{id}/status: rejects a role without permission before executing business logic.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Under Investigation\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}/status",
+            "description": "Omar Khalil – PUT /incidents/{id}/status: rejects a request without the bearer token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Under Investigation\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "POST /incidents/{id}/notes",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}/notes",
+            "description": "Omar Khalil – POST /incidents/{id}/notes: succeeds with the permitted role. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Inspected message headers and quarantined attachment.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}/notes",
+            "description": "Omar Khalil – POST /incidents/{id}/notes: checks invalid input. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/999999/notes",
+            "description": "Omar Khalil – POST /incidents/{id}/notes: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Inspected message headers and quarantined attachment.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}/notes",
+            "description": "Omar Khalil – POST /incidents/{id}/notes: rejects a role without permission before executing business logic.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Inspected message headers and quarantined attachment.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{incident_id}}/notes",
+            "description": "Omar Khalil – POST /incidents/{id}/notes: rejects a request without the bearer token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Inspected message headers and quarantined attachment.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Full incident lifecycle",
+      "item": [
+        {
+          "name": "Create lifecycle incident",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents",
+            "description": "Omar Khalil – Creates a fresh Open incident for a complete independent lifecycle.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Full incident lifecycle\",\n  \"description\": \"Suspicious attachment delivered to a mailbox\",\n  \"category\": \"Phishing\",\n  \"severity\": \"Medium\",\n  \"asset_id\": {{asset_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"lifecycle_incident_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Assign lifecycle analyst",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{lifecycle_incident_id}}/assign",
+            "description": "Omar Khalil – Assigns the analyst before analyst-only lifecycle execution.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"analyst_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reject Open to Closed",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{lifecycle_incident_id}}/status",
+            "description": "Omar Khalil – Rejects a skipped transition and names Under Investigation as the allowed next status.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Closed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Advance to Under Investigation",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{lifecycle_incident_id}}/status",
+            "description": "Omar Khalil – Advances to the next permitted status Under Investigation; Resolved sets resolved_at and each step notifies the reporter.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Under Investigation\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Advance to Mitigated",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{lifecycle_incident_id}}/status",
+            "description": "Omar Khalil – Advances to the next permitted status Mitigated; Resolved sets resolved_at and each step notifies the reporter.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Mitigated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Advance to Resolved",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{lifecycle_incident_id}}/status",
+            "description": "Omar Khalil – Advances to the next permitted status Resolved; Resolved sets resolved_at and each step notifies the reporter.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Resolved\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Advance to Closed",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{lifecycle_incident_id}}/status",
+            "description": "Omar Khalil – Advances to the next permitted status Closed; Resolved sets resolved_at and each step notifies the reporter.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Closed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Add lifecycle note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{lifecycle_incident_id}}/notes",
+            "description": "Omar Khalil – Records a note with the analyst identity from the token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Containment and recovery verified.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inspect lifecycle and notes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5003/incidents/{{lifecycle_incident_id}}",
+            "description": "Omar Khalil – Shows Closed status, resolution timestamp and investigation notes."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "POST /playbooks",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks",
+            "description": "Omar Khalil – POST /playbooks: succeeds with the permitted role. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Phishing Response\",\n  \"description\": \"Contain, investigate and recover\",\n  \"incident_category\": \"Phishing\",\n  \"severity\": \"High\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"playbook_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks",
+            "description": "Omar Khalil – POST /playbooks: checks invalid input. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Phishing Response\",\n  \"description\": \"Contain, investigate and recover\",\n  \"incident_category\": \"Phishing\",\n  \"severity\": \"Extreme\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/not-a-route",
+            "description": "Omar Khalil – POST /playbooks: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Phishing Response\",\n  \"description\": \"Contain, investigate and recover\",\n  \"incident_category\": \"Phishing\",\n  \"severity\": \"High\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks",
+            "description": "Omar Khalil – POST /playbooks: rejects a role without permission before executing business logic.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Phishing Response\",\n  \"description\": \"Contain, investigate and recover\",\n  \"incident_category\": \"Phishing\",\n  \"severity\": \"High\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks",
+            "description": "Omar Khalil – POST /playbooks: rejects a request without the bearer token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Phishing Response\",\n  \"description\": \"Contain, investigate and recover\",\n  \"incident_category\": \"Phishing\",\n  \"severity\": \"High\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GET /playbooks",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auditor_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks",
+            "description": "Omar Khalil – GET /playbooks: succeeds with the permitted role. This bodyless collection has no validation or missing-record case; unsupported PATCH returns 405."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auditor_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks",
+            "description": "Omar Khalil – GET /playbooks: checks invalid input. This bodyless collection has no validation or missing-record case; unsupported PATCH returns 405."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 405\", () => pm.response.to.have.status(405));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auditor_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/not-a-route",
+            "description": "Omar Khalil – GET /playbooks: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks",
+            "description": "Omar Khalil – GET /playbooks: rejects a role without permission before executing business logic."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks",
+            "description": "Omar Khalil – GET /playbooks: rejects a request without the bearer token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GET /playbooks/{id}",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{playbook_id}}",
+            "description": "Omar Khalil – GET /playbooks/{id}: succeeds with the permitted role. Actions are ordered by step_number; malformed path identifiers return 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/not-an-integer",
+            "description": "Omar Khalil – GET /playbooks/{id}: checks invalid input. Actions are ordered by step_number; malformed path identifiers return 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/999999",
+            "description": "Omar Khalil – GET /playbooks/{id}: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{playbook_id}}",
+            "description": "Omar Khalil – GET /playbooks/{id}: rejects a role without permission before executing business logic."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{playbook_id}}",
+            "description": "Omar Khalil – GET /playbooks/{id}: rejects a request without the bearer token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "POST /playbooks/{id}/actions",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{playbook_id}}/actions",
+            "description": "Omar Khalil – POST /playbooks/{id}/actions: succeeds with the permitted role. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Contain affected mailbox\",\n  \"step_number\": 1,\n  \"assigned_user_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"action_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{playbook_id}}/actions",
+            "description": "Omar Khalil – POST /playbooks/{id}/actions: checks invalid input. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Contain affected mailbox\",\n  \"step_number\": 0,\n  \"assigned_user_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/999999/actions",
+            "description": "Omar Khalil – POST /playbooks/{id}/actions: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Contain affected mailbox\",\n  \"step_number\": 1,\n  \"assigned_user_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{playbook_id}}/actions",
+            "description": "Omar Khalil – POST /playbooks/{id}/actions: rejects a role without permission before executing business logic.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Contain affected mailbox\",\n  \"step_number\": 1,\n  \"assigned_user_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{playbook_id}}/actions",
+            "description": "Omar Khalil – POST /playbooks/{id}/actions: rejects a request without the bearer token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Contain affected mailbox\",\n  \"step_number\": 1,\n  \"assigned_user_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Duplicate action step",
+      "item": [
+        {
+          "name": "Reject duplicate step one",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{playbook_id}}/actions",
+            "description": "Omar Khalil – The unique playbook_id/step_number constraint rejects a duplicate action with 409.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Contain affected mailbox\",\n  \"step_number\": 1,\n  \"assigned_user_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PUT /actions/{id}/status",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/actions/{{action_id}}/status",
+            "description": "Omar Khalil – PUT /actions/{id}/status: succeeds with the permitted role. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Progress\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/actions/{{action_id}}/status",
+            "description": "Omar Khalil – PUT /actions/{id}/status: checks invalid input. ",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Pending\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/actions/999999/status",
+            "description": "Omar Khalil – PUT /actions/{id}/status: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Progress\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/actions/{{action_id}}/status",
+            "description": "Omar Khalil – PUT /actions/{id}/status: rejects a role without permission before executing business logic.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Progress\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5009/actions/{{action_id}}/status",
+            "description": "Omar Khalil – PUT /actions/{id}/status: rejects a request without the bearer token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Progress\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Full playbook workflow",
+      "item": [
+        {
+          "name": "Create workflow playbook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks",
+            "description": "Omar Khalil – Creates a separate playbook for the complete action workflow.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Full workflow\",\n  \"description\": \"Contain, investigate and recover\",\n  \"incident_category\": \"Phishing\",\n  \"severity\": \"High\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"workflow_playbook_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Add step 2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{workflow_playbook_id}}/actions",
+            "description": "Omar Khalil – Inserts steps out of order to demonstrate numeric ordering.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Workflow step 2\",\n  \"step_number\": 2,\n  \"assigned_user_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"workflow_action_2_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Add step 1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{workflow_playbook_id}}/actions",
+            "description": "Omar Khalil – Inserts steps out of order to demonstrate numeric ordering.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Workflow step 1\",\n  \"step_number\": 1,\n  \"assigned_user_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"workflow_action_1_id\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reject out of order start",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/actions/{{workflow_action_2_id}}/status",
+            "description": "Omar Khalil – Step two cannot start until step one is Completed.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Progress\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 422\", () => pm.response.to.have.status(422));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Step 1: In Progress",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/actions/{{workflow_action_1_id}}/status",
+            "description": "Omar Khalil – Executes Pending → In Progress → Completed in step order; completion records completed_at.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Progress\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Step 1: Completed",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/actions/{{workflow_action_1_id}}/status",
+            "description": "Omar Khalil – Executes Pending → In Progress → Completed in step order; completion records completed_at.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Completed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Step 2: In Progress",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/actions/{{workflow_action_2_id}}/status",
+            "description": "Omar Khalil – Executes Pending → In Progress → Completed in step order; completion records completed_at.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Progress\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Step 2: Completed",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/actions/{{workflow_action_2_id}}/status",
+            "description": "Omar Khalil – Executes Pending → In Progress → Completed in step order; completion records completed_at.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Completed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inspect ordered actions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{workflow_playbook_id}}",
+            "description": "Omar Khalil – Shows actions in step_number order with completed timestamps."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete workflow playbook",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{workflow_playbook_id}}",
+            "description": "Omar Khalil – Deletes the playbook and cascades its dependent response actions."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DELETE /playbooks/{id}",
+      "item": [
+        {
+          "name": "Success",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{playbook_id}}",
+            "description": "Omar Khalil – DELETE /playbooks/{id}: succeeds with the permitted role. This bodyless endpoint has no validation body; malformed integer IDs return 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation error",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/not-an-integer",
+            "description": "Omar Khalil – DELETE /playbooks/{id}: checks invalid input. This bodyless endpoint has no validation body; malformed integer IDs return 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Not found",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/999999",
+            "description": "Omar Khalil – DELETE /playbooks/{id}: checks an unknown resource or unmatched route. Collection and creation endpoints have no missing-record case, so their unmatched-route example demonstrates the JSON 404 envelope."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wrong role",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{analyst_token}}"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{playbook_id}}",
+            "description": "Omar Khalil – DELETE /playbooks/{id}: rejects a role without permission before executing business logic."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing token",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://{{host}}:5009/playbooks/{{playbook_id}}",
+            "description": "Omar Khalil – DELETE /playbooks/{id}: rejects a request without the bearer token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Expected HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"JSON envelope\", () => pm.expect(pm.response.json()).to.have.property(\"status\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

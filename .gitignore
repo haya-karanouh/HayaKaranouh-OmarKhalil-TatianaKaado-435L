@@ -10,4 +10,5 @@ instance/
 database/*.db
 /evidence/*
 !/evidence/Haya_Karanouh/
+!/evidence/Omar_Khalil/
 playwright-report/
