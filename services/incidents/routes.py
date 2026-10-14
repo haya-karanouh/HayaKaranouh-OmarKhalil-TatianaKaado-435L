@@ -37,3 +37,10 @@ def list_incidents():
 def get(incident_id):
     """Author: Omar Khalil. Incident retrieved."""
     return success_response('Incident retrieved', service.get(incident_id, g.user))
+
+
+@blueprint.put('/incidents/<int:incident_id>/assign')
+@require_roles(ADMIN)
+def assign(incident_id):
+    """Author: Omar Khalil. Incident assigned."""
+    return success_response('Incident assigned', service.assign(incident_id, require_json_body(), g.user))
