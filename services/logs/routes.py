@@ -43,6 +43,15 @@ def search_logs():
     return success_response("Logs retrieved", {"logs": service.search(request.args.to_dict())})
 
 
+@blueprint.get("/logs/user/<int:user_id>")
+@require_roles(ADMIN, AUDITOR)
+def logs_for_user(user_id):
+    """Author: Haya Karanouh. Retrieve all audit records associated with a user."""
+    logs = service.logs_for_user(user_id)
+    message = "Logs retrieved" if logs else "No logs found for this user"
+    return success_response(message, {"logs": logs})
+
+
 @blueprint.get("/health")
 def health():
     """Author: Haya Karanouh. Return logs service health."""

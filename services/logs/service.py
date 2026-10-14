@@ -81,6 +81,14 @@ class LogsService:
         records = query.order_by(Log.timestamp.desc(), Log.id.desc()).all()
         return [self.serialize(record) for record in records]
 
+    def logs_for_user(self, user_id):
+        if db.session.get(User, user_id) is None:
+            raise NotFoundError("User not found")
+        records = db.session.query(Log).filter_by(user_id=user_id).order_by(
+            Log.timestamp.desc(), Log.id.desc()
+        ).all()
+        return [self.serialize(record) for record in records]
+
     @staticmethod
     def serialize(record):
         return {
