@@ -117,9 +117,9 @@ class UsersService:
         except IntegrityError as error:
             db.session.rollback()
             raise ConflictError("username or email is already in use") from error
-        log_event(user.id, USER_UPDATED, f"Updated user {user.username}", "Information", "users")
+        log_event(actor["user_id"], USER_UPDATED, f"Updated user {user.username}", "Information", "users")
         if user.role != old_role or user.account_status != old_status:
-            log_event(user.id, ROLE_CHANGED, f"Changed role/status for user {user.username}", "Warning", "users")
+            log_event(actor["user_id"], ROLE_CHANGED, f"Changed role/status for user {user.username}", "Warning", "users")
         return self.serialize(user)
 
     def delete(self, user_id, actor):
