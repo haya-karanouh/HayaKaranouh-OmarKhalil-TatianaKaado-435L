@@ -4,7 +4,7 @@ import jwt
 from flask import Blueprint, g, request
 
 from common.config import JWT_ALGORITHM, JWT_SECRET
-from common.constants import ADMIN, EMPLOYEE
+from common.constants import ADMIN, AUDITOR, EMPLOYEE
 from common.auth import require_roles
 from common.errors import error_response, success_response
 from common.validators import require_fields, require_json_body
@@ -55,6 +55,13 @@ def update_user(user_id):
 def delete_user(user_id):
     """Author: Haya Karanouh. Delete an unreferenced user as an administrator."""
     return success_response("User deleted", service.delete(user_id, g.user))
+
+
+@blueprint.get("/users")
+@require_roles(ADMIN, AUDITOR)
+def list_users():
+    """Author: Haya Karanouh. List user summaries with an optional role filter."""
+    return success_response("Users retrieved", {"users": service.list_users(request.args.get("role"))})
 
 
 @blueprint.get("/health")

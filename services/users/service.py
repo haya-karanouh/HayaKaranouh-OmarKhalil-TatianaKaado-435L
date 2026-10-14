@@ -136,6 +136,14 @@ class UsersService:
         log_event(actor["user_id"], USER_DELETED, f"Deleted user {username}", "Warning", "users")
         return {"id": user_id, "username": username}
 
+    def list_users(self, role=None):
+        query = db.session.query(User)
+        if role:
+            if role not in ROLES:
+                raise ValidationError("role is not supported")
+            query = query.filter(User.role == role)
+        return [self.serialize(user) for user in query.order_by(User.id).all()]
+
     @staticmethod
     def serialize(user):
         return {
