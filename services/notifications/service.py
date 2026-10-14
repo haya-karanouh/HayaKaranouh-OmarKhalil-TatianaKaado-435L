@@ -4,10 +4,13 @@ import requests
 from werkzeug.exceptions import ServiceUnavailable
 
 from common.config import SERVICE_URLS
-from common.constants import DATA_CREATED, INCIDENT_SEVERITIES, NOTIFICATION_TYPES
+from common.constants import (
+    ADMIN, ANALYST, AUDITOR, DATA_CREATED, EMPLOYEE, INCIDENT_SEVERITIES,
+    NOTIFICATION_TYPES, SERVICE,
+)
 from common.db import db
-from common.errors import NotFoundError, ValidationError
-from common.models import Notification
+from common.errors import NotFoundError, PermissionDenied, ValidationError
+from common.models import Notification, User
 from common.service_client import call_service, log_event
 from common.validators import require_fields, valid_enum
 
@@ -41,6 +44,17 @@ class NotificationsService:
         db.session.commit()
         log_event(actor.get("user_id"), DATA_CREATED, f"Created notification {notification.id}", "Information", "notifications")
         return self.serialize(notification)
+
+    def list_for_user(self, user_id, actor):
+        if db.session.get(User, user_id) is None:
+            raise NotFoundError("User not found")
+        privileged_roles = {ADMIN, AUDITOR, SERVICE}
+        if actor["role"] not in privileged_roles and actor["user_id"] != user_id:
+            raise PermissionDenied("You may only view your own notifications")
+        notifications = db.session.query(Notification).filter_by(user_id=user_id).order_by(
+            Notification.created_at.desc(), Notification.id.desc()
+        ).all()
+        return [self.serialize(notification) for notification in notifications]
 
     @staticmethod
     def serialize(notification):
