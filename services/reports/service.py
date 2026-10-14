@@ -55,3 +55,7 @@ class ReportsService:
             "critical_vulnerabilities": sum(row["severity"] == "Critical" for row in vulnerabilities),
             "recent_activities": self.recent(logs, "timestamp", 10),
         }
+
+    def incidents(self):
+        rows = self.fetch("incidents")
+        return {"total": len(rows), "by_severity": self.counts(rows, "severity"), "by_status": self.counts(rows, "status")}

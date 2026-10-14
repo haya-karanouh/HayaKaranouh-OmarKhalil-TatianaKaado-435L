@@ -22,3 +22,10 @@ def health():
 def summary():
     """Author: Tatiana Kaado. Summarize security data from source APIs."""
     return success_response("Summary report generated", service.generate("summary", g.user, request.args))
+
+
+@blueprint.get("/reports/incidents")
+@require_roles(ADMIN, AUDITOR)
+def incidents():
+    """Author: Tatiana Kaado. Generate the incidents report from HTTP sources."""
+    return success_response("incidents report generated", service.generate("incidents", g.user, request.args))
