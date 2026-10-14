@@ -67,3 +67,7 @@ class ReportsService:
     def threats(self):
         rows = self.fetch("threats")
         return {"total": len(rows), "by_severity": self.counts(rows, "severity"), "by_type": self.counts(rows, "threat_type"), "recent": self.recent(rows, "date_added", 5)}
+
+    def vulnerabilities(self):
+        rows = self.fetch("vulnerabilities")
+        return {"total": len(rows), "by_severity": self.counts(rows, "severity"), "by_status": self.counts(rows, "status"), "critical": [row for row in rows if row["severity"] == "Critical"]}
