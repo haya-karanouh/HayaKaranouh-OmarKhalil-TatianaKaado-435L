@@ -44,3 +44,10 @@ def get(playbook_id):
 def add_action(playbook_id):
     """Author: Omar Khalil. Response action created."""
     return success_response('Response action created', service.add_action(playbook_id, require_json_body(), g.user), 201)
+
+
+@blueprint.put('/actions/<int:action_id>/status')
+@require_roles(ADMIN, ANALYST)
+def status(action_id):
+    """Author: Omar Khalil. Response action status changed."""
+    return success_response('Response action status changed', service.status(action_id, require_json_body(), g.user))
