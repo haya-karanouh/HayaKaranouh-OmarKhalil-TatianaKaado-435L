@@ -22,6 +22,41 @@ class Checks:
         self.count += 1
         return response.json().get('data')
 
+    def playbooks(self):
+        body = dict(name='HTTP phishing playbook', description='Contain and investigate suspicious messages', incident_category='Phishing', severity='High')
+        playbook = self.request('POST', 5009, '/playbooks', 201, body=body)
+        path = f'/playbooks/{playbook["id"]}'
+        assert playbook['created_by'] == 1
+        self.request('POST', 5009, '/playbooks', 422, body={**body, 'severity': 'Extreme'})
+        self.request('POST', 5009, '/playbooks', 422, body={'name': 'Missing'})
+        self.request('GET', 5009, '/playbooks', role='auditor')
+        step2 = self.request('POST', 5009, path + '/actions', 201, role='analyst', body={'description': 'Investigate', 'step_number': 2})
+        step1 = self.request('POST', 5009, path + '/actions', 201, body={'description': 'Contain', 'step_number': 1, 'assigned_user_id': 2})
+        assert [row['step_number'] for row in self.request('GET', 5009, path)['actions']] == [1, 2]
+        self.request('POST', 5009, path + '/actions', 409, body={'description': 'Duplicate', 'step_number': 1})
+        for value in [0, -1, True, 1.5, '3']:
+            self.request('POST', 5009, path + '/actions', 422, body={'description': 'Invalid', 'step_number': value})
+        self.request('POST', 5009, path + '/actions', 404, body={'description': 'Unknown assignee', 'step_number': 3, 'assigned_user_id': 999999})
+        action1, action2 = f'/actions/{step1["id"]}/status', f'/actions/{step2["id"]}/status'
+        self.request('PUT', 5009, action2, 422, body={'status': 'In Progress'})
+        self.request('PUT', 5009, action1, 422, body={'status': 'Completed'})
+        row = self.request('PUT', 5009, action1, role='analyst', body={'status': 'In Progress'})
+        assert row['completed_at'] is None
+        row = self.request('PUT', 5009, action1, role='analyst', body={'status': 'Completed'})
+        assert row['completed_at']
+        self.request('PUT', 5009, action1, 422, body={'status': 'In Progress'})
+        self.request('PUT', 5009, action2, body={'status': 'In Progress', 'assigned_user_id': 2})
+        self.request('PUT', 5009, action2, body={'status': 'Completed'})
+        for method, endpoint, data in [('POST', '/playbooks', body), ('GET', '/playbooks', None), ('GET', path, None), ('POST', path + '/actions', {'description': 'Later', 'step_number': 3}), ('PUT', action2, {'status': 'Completed'}), ('DELETE', path, None)]:
+            self.request(method, 5009, endpoint, 403, role='employee', body=data)
+            self.request(method, 5009, endpoint, 401, role=None, body=data)
+        self.request('DELETE', 5009, path, 403, role='analyst')
+        for method, endpoint, data in [('GET', '/playbooks/999999', None), ('DELETE', '/playbooks/999999', None), ('POST', '/playbooks/999999/actions', {'description': 'Missing', 'step_number': 1}), ('PUT', '/actions/999999/status', {'status': 'In Progress'})]:
+            self.request(method, 5009, endpoint, 404, body=data)
+        self.request('DELETE', 5009, path)
+        self.request('GET', 5009, path, 404)
+        self.request('PUT', 5009, action1, 404, body={'status': 'In Progress'})
+
     def incidents(self):
         asset = self.request('POST', 5002, '/assets', 201, body=dict(name='Incident test asset', asset_type='Server', ip_address='10.4.5.6', owner_id=3, department='Engineering', criticality='High'))
         body = dict(title='HTTP phishing report', description='Suspicious attachment', category='Phishing', severity='High', asset_id=asset['id'])
