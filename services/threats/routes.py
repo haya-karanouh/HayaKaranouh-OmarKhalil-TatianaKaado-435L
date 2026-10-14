@@ -57,3 +57,9 @@ def search():
 def update(threat_id):
     """Author: Tatiana Kaado. Update description, severity and source."""
     return success_response("Threat updated", service.update(threat_id, require_json_body(), g.user))
+
+@blueprint.delete("/threats/<int:threat_id>")
+@require_roles(ADMIN)
+def delete(threat_id):
+    """Author: Tatiana Kaado. Delete a threat as administrator."""
+    return success_response("Threat deleted", service.delete(threat_id, g.user))

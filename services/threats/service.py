@@ -103,3 +103,10 @@ class ThreatsService:
         for admin in admins:
             notify(admin["id"], "Critical threat", f"Threat {row.id}: {row.threat_value}", "Threat Alert", "Critical")
         return self.serialize(row)
+
+    def delete(self, threat_id, actor):
+        from common.constants import DATA_DELETED
+        db.session.delete(self.find(threat_id))
+        db.session.commit()
+        log_event(actor["user_id"], DATA_DELETED, f"Deleted threat {threat_id}", "Warning", "threats")
+        return {"id": threat_id}
