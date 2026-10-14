@@ -1,6 +1,6 @@
 """HTTP routes for the logs service."""
 
-from flask import Blueprint
+from flask import Blueprint, request
 
 from common.auth import require_roles
 from common.constants import ADMIN, ANALYST, AUDITOR, SERVICE
@@ -34,6 +34,13 @@ def list_logs():
 def get_log(log_id):
     """Author: Haya Karanouh. Retrieve one audit record by ID."""
     return success_response("Log retrieved", service.get_log(log_id))
+
+
+@blueprint.get("/logs/search")
+@require_roles(ADMIN, AUDITOR, ANALYST)
+def search_logs():
+    """Author: Haya Karanouh. Search audit records using combined filters."""
+    return success_response("Logs retrieved", {"logs": service.search(request.args.to_dict())})
 
 
 @blueprint.get("/health")

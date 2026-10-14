@@ -1,5 +1,7 @@
 """Business logic for logs service."""
 
+from datetime import datetime
+
 from common.config import SERVICE_PORTS
 from common.constants import LOG_ACTIONS, LOG_SEVERITIES
 from common.db import db
@@ -41,6 +43,43 @@ class LogsService:
         if record is None:
             raise NotFoundError("Log not found")
         return self.serialize(record)
+
+    def search(self, filters):
+        allowed = {"user_id", "date", "action", "severity", "related_service"}
+        unexpected = set(filters) - allowed
+        if unexpected:
+            raise ValidationError(f"Unexpected search filters: {', '.join(sorted(unexpected))}")
+        query = db.session.query(Log)
+        if filters.get("user_id"):
+            try:
+                user_id = int(filters["user_id"])
+            except (TypeError, ValueError) as error:
+                raise ValidationError("user_id must be a positive integer") from error
+            if user_id < 1:
+                raise ValidationError("user_id must be a positive integer")
+            query = query.filter(Log.user_id == user_id)
+        if filters.get("date"):
+            value = filters["date"]
+            try:
+                if len(value) != 10 or value[4] != "-" or value[7] != "-":
+                    raise ValueError
+                date = datetime.strptime(value, "%Y-%m-%d").date()
+            except (TypeError, ValueError) as error:
+                raise ValidationError("date must use YYYY-MM-DD format") from error
+            query = query.filter(db.func.date(Log.timestamp) == date.isoformat())
+        for field, allowed_values in (("action", LOG_ACTIONS), ("severity", LOG_SEVERITIES)):
+            value = filters.get(field)
+            if value:
+                if not valid_enum(value, allowed_values):
+                    raise ValidationError(f"{field} is not supported")
+                query = query.filter(getattr(Log, field) == value)
+        related_service = filters.get("related_service")
+        if related_service:
+            if related_service not in SERVICE_PORTS:
+                raise ValidationError("related_service is not supported")
+            query = query.filter(Log.related_service == related_service)
+        records = query.order_by(Log.timestamp.desc(), Log.id.desc()).all()
+        return [self.serialize(record) for record in records]
 
     @staticmethod
     def serialize(record):
