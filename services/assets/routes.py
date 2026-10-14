@@ -37,3 +37,10 @@ def update(asset_id):
 def delete(asset_id):
     """Author: Omar Khalil. Asset deleted."""
     return success_response('Asset deleted', service.delete(asset_id, g.user))
+
+
+@blueprint.get('/assets')
+@require_roles(ADMIN, AUDITOR)
+def list_assets():
+    """Author: Omar Khalil. Assets retrieved."""
+    return success_response('Assets retrieved', {'assets': service.list()})
