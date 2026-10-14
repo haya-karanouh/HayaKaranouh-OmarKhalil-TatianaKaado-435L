@@ -1,6 +1,8 @@
 """HTTP routes for the reports service."""
 
-from flask import Blueprint
+from flask import Blueprint, g, request
+from common.auth import require_roles
+from common.constants import ADMIN, AUDITOR
 
 from common.errors import success_response
 from services.reports.service import ReportsService
@@ -11,5 +13,12 @@ service = ReportsService()
 
 @blueprint.get("/health")
 def health():
-    """Author: Haya Karanouh. Return reports service health."""
+    """Author: Tatiana Kaado. Return reports service health."""
     return success_response("reports service is healthy", service.health())
+
+
+@blueprint.get("/reports/summary")
+@require_roles(ADMIN, AUDITOR)
+def summary():
+    """Author: Tatiana Kaado. Summarize security data from source APIs."""
+    return success_response("Summary report generated", service.generate("summary", g.user, request.args))
