@@ -66,3 +66,15 @@ class ThreatsService:
             return response.json()["data"]["users"]
         except (requests.RequestException, ValueError, KeyError, TypeError) as error:
             raise ServiceUnavailable("Users service is unavailable") from error
+
+    def list(self, filters=None):
+        filters = dict(filters or {})
+        require_fields(filters, set(), {"threat_type", "threat_value", "severity", "source"})
+        self.validate({key: value for key, value in filters.items() if key != "threat_type"})
+        if "threat_type" in filters and filters["threat_type"] not in THREAT_TYPES:
+            raise ValidationError("Invalid threat_type")
+        query = db.session.query(Threat)
+        for field, value in filters.items():
+            column = getattr(Threat, field)
+            query = query.filter(column.contains(value, autoescape=True) if field == "threat_value" else column == value)
+        return [self.serialize(row) for row in query.order_by(Threat.id).all()]

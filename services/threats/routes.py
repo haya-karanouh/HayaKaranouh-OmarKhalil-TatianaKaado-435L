@@ -33,3 +33,9 @@ def check_json():
 def create():
     """Author: Tatiana Kaado. Create a validated threat indicator."""
     return success_response("Threat created", service.create(require_json_body(), g.user), 201)
+
+@blueprint.get("/threats")
+@require_roles(ADMIN, ANALYST, AUDITOR)
+def list_threats():
+    """Author: Tatiana Kaado. List threat indicators."""
+    return success_response("Threats retrieved", {"threats": service.list()})
