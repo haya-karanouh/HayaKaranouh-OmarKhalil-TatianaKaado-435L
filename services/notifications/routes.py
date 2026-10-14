@@ -30,6 +30,13 @@ def notifications_for_user(user_id):
     return success_response("Notifications retrieved", {"notifications": notifications})
 
 
+@blueprint.get("/notifications/<int:notification_id>")
+@require_roles(ADMIN, AUDITOR, ANALYST, EMPLOYEE, SERVICE)
+def get_notification(notification_id):
+    """Author: Haya Karanouh. Retrieve one notification within the caller's scope."""
+    return success_response("Notification retrieved", service.get_notification(notification_id, g.user))
+
+
 @blueprint.get("/health")
 def health():
     """Author: Haya Karanouh. Return notifications service health."""

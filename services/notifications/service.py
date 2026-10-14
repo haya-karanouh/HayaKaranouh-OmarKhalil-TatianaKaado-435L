@@ -56,6 +56,15 @@ class NotificationsService:
         ).all()
         return [self.serialize(notification) for notification in notifications]
 
+    def get_notification(self, notification_id, actor):
+        notification = db.session.get(Notification, notification_id)
+        if notification is None:
+            raise NotFoundError("Notification not found")
+        privileged_roles = {ADMIN, AUDITOR, SERVICE}
+        if actor["role"] not in privileged_roles and actor["user_id"] != notification.user_id:
+            raise PermissionDenied("You may only view your own notifications")
+        return self.serialize(notification)
+
     @staticmethod
     def serialize(notification):
         return {
