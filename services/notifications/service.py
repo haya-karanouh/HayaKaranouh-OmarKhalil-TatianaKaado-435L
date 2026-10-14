@@ -7,7 +7,7 @@ from werkzeug.exceptions import ServiceUnavailable
 from common.config import SERVICE_URLS
 from common.constants import (
     ADMIN, ANALYST, AUDITOR, DATA_CREATED, EMPLOYEE, INCIDENT_SEVERITIES,
-    NOTIFICATION_TYPES, SERVICE, STATUS_CHANGED,
+    NOTIFICATION_STATUSES, NOTIFICATION_TYPES, SERVICE, STATUS_CHANGED,
 )
 from common.db import db
 from common.errors import NotFoundError, PermissionDenied, ValidationError
@@ -79,6 +79,33 @@ class NotificationsService:
         db.session.commit()
         log_event(actor.get("user_id"), STATUS_CHANGED, f"Marked notification {notification.id} as read", "Information", "notifications")
         return {"notification": self.serialize(notification), "already_read": False}
+
+    def search(self, filters):
+        allowed = {"user_id", "notification_type", "severity", "status"}
+        unexpected = set(filters) - allowed
+        if unexpected:
+            raise ValidationError(f"Unexpected search filters: {', '.join(sorted(unexpected))}")
+        query = db.session.query(Notification)
+        if filters.get("user_id"):
+            try:
+                user_id = int(filters["user_id"])
+            except (TypeError, ValueError) as error:
+                raise ValidationError("user_id must be a positive integer") from error
+            if user_id < 1:
+                raise ValidationError("user_id must be a positive integer")
+            query = query.filter(Notification.user_id == user_id)
+        for field, allowed_values in (
+            ("notification_type", NOTIFICATION_TYPES),
+            ("severity", INCIDENT_SEVERITIES),
+            ("status", NOTIFICATION_STATUSES),
+        ):
+            value = filters.get(field)
+            if value:
+                if not valid_enum(value, allowed_values):
+                    raise ValidationError(f"{field} is not supported")
+                query = query.filter(getattr(Notification, field) == value)
+        notifications = query.order_by(Notification.created_at.desc(), Notification.id.desc()).all()
+        return [self.serialize(notification) for notification in notifications]
 
     @staticmethod
     def serialize(notification):

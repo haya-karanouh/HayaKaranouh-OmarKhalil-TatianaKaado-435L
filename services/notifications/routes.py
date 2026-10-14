@@ -1,6 +1,6 @@
 """HTTP routes for the notifications service."""
 
-from flask import Blueprint, g
+from flask import Blueprint, g, request
 
 from common.auth import require_roles
 from common.constants import ADMIN, ANALYST, AUDITOR, EMPLOYEE, SERVICE
@@ -44,6 +44,13 @@ def mark_notification_read(notification_id):
     result = service.mark_read(notification_id, g.user)
     message = "Notification was already read" if result["already_read"] else "Notification marked as read"
     return success_response(message, result["notification"])
+
+
+@blueprint.get("/notifications/search")
+@require_roles(ADMIN, ANALYST, AUDITOR)
+def search_notifications():
+    """Author: Haya Karanouh. Search notifications using combined filters."""
+    return success_response("Notifications retrieved", {"notifications": service.search(request.args.to_dict())})
 
 
 @blueprint.get("/health")
