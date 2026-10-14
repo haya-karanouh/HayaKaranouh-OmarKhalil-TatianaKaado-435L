@@ -51,3 +51,10 @@ def assign(incident_id):
 def status(incident_id):
     """Author: Omar Khalil. Incident status changed."""
     return success_response('Incident status changed', service.status(incident_id, require_json_body(), g.user))
+
+
+@blueprint.post('/incidents/<int:incident_id>/notes')
+@require_roles(ADMIN, ANALYST)
+def add_note(incident_id):
+    """Author: Omar Khalil. Investigation note created."""
+    return success_response('Investigation note created', service.add_note(incident_id, require_json_body(), g.user), 201)
