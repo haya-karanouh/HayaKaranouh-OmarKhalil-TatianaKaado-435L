@@ -32,6 +32,10 @@ class LogsService:
         db.session.commit()
         return self.serialize(record)
 
+    def list_logs(self):
+        records = db.session.query(Log).order_by(Log.timestamp.desc(), Log.id.desc()).all()
+        return [self.serialize(record) for record in records]
+
     @staticmethod
     def serialize(record):
         return {
