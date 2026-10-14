@@ -9,7 +9,7 @@ from werkzeug.exceptions import Unauthorized
 from common.auth import create_token
 from common.constants import (
     ACCOUNT_STATUSES, EMPLOYEE, LOGIN_FAILED, LOGIN_SUCCESS, ROLE_CHANGED,
-    ROLES, USER_CREATED, USER_UPDATED,
+    ROLES, USER_CREATED, USER_DELETED, USER_UPDATED,
 )
 from common.db import db
 from common.errors import ConflictError, NotFoundError, PermissionDenied, ValidationError
@@ -50,7 +50,10 @@ class UsersService:
         except IntegrityError as error:
             db.session.rollback()
             raise ConflictError("username or email is already registered") from error
-        log_event(user.id, USER_CREATED, f"Created user {user.username}", "Information", "users")
+        log_event(
+            actor.get("user_id") if actor else None, USER_CREATED,
+            f"Created user {user.username}", "Information", "users",
+        )
         return self.serialize(user)
 
     def login(self, data):
@@ -118,6 +121,20 @@ class UsersService:
         if user.role != old_role or user.account_status != old_status:
             log_event(user.id, ROLE_CHANGED, f"Changed role/status for user {user.username}", "Warning", "users")
         return self.serialize(user)
+
+    def delete(self, user_id, actor):
+        user = db.session.get(User, user_id)
+        if user is None:
+            raise NotFoundError("User not found")
+        username = user.username
+        db.session.delete(user)
+        try:
+            db.session.commit()
+        except IntegrityError as error:
+            db.session.rollback()
+            raise ConflictError("User cannot be deleted because other records reference this account") from error
+        log_event(actor["user_id"], USER_DELETED, f"Deleted user {username}", "Warning", "users")
+        return {"id": user_id, "username": username}
 
     @staticmethod
     def serialize(user):

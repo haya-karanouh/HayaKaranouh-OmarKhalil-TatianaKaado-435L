@@ -50,6 +50,13 @@ def update_user(user_id):
     return success_response("User updated", service.update(user_id, data, g.user))
 
 
+@blueprint.delete("/users/<int:user_id>")
+@require_roles(ADMIN)
+def delete_user(user_id):
+    """Author: Haya Karanouh. Delete an unreferenced user as an administrator."""
+    return success_response("User deleted", service.delete(user_id, g.user))
+
+
 @blueprint.get("/health")
 def health():
     """Author: Haya Karanouh. Return users service health."""
