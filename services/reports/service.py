@@ -71,3 +71,9 @@ class ReportsService:
     def vulnerabilities(self):
         rows = self.fetch("vulnerabilities")
         return {"total": len(rows), "by_severity": self.counts(rows, "severity"), "by_status": self.counts(rows, "status"), "critical": [row for row in rows if row["severity"] == "Critical"]}
+
+    def activity(self):
+        rows = self.fetch("logs")
+        actions = Counter(row["action"] for row in rows)
+        return {"total_activities": len(rows), "login_attempts": actions[LOGIN_SUCCESS] + actions[LOGIN_FAILED], "failed_logins": actions[LOGIN_FAILED],
+                "top_actions": [{"action": action, "count": count} for action, count in sorted(actions.items(), key=lambda item: (-item[1], item[0]))[:5]}
