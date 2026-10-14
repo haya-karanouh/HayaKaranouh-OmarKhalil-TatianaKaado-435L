@@ -8,5 +8,5 @@ __pycache__/
 .ruff_cache/
 instance/
 database/*.db
-evidence/
+/evidence/
 playwright-report/
