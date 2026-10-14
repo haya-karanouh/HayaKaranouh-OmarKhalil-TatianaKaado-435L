@@ -45,3 +45,9 @@ def list_threats():
 def get(threat_id):
     """Author: Tatiana Kaado. Retrieve one threat."""
     return success_response("Threat retrieved", service.get(threat_id))
+
+@blueprint.get("/threats/search")
+@require_roles(ADMIN, ANALYST, AUDITOR)
+def search():
+    """Author: Tatiana Kaado. Search threats with combined filters."""
+    return success_response("Threats retrieved", {"threats": service.list(request.args)})
