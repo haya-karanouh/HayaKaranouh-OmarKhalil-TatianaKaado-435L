@@ -7,9 +7,12 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import Unauthorized
 
 from common.auth import create_token
-from common.constants import EMPLOYEE, LOGIN_FAILED, LOGIN_SUCCESS, USER_CREATED
+from common.constants import (
+    ACCOUNT_STATUSES, EMPLOYEE, LOGIN_FAILED, LOGIN_SUCCESS, ROLE_CHANGED,
+    ROLES, USER_CREATED, USER_UPDATED,
+)
 from common.db import db
-from common.errors import ConflictError, PermissionDenied, ValidationError
+from common.errors import ConflictError, NotFoundError, PermissionDenied, ValidationError
 from common.models import User
 from common.service_client import log_event
 from common.validators import require_fields, strong_password, valid_email
@@ -72,6 +75,49 @@ class UsersService:
         db.session.commit()
         log_event(user.id, LOGIN_SUCCESS, f"User {user.username} logged in", "Information", "users")
         return {"token": create_token(user), "user": self.serialize(user)}
+
+    def update(self, user_id, data, actor):
+        is_admin = actor["role"] == "Security Administrator"
+        user = db.session.get(User, user_id)
+        if user is None:
+            raise NotFoundError("User not found")
+        if not is_admin and actor["user_id"] != user.id:
+            raise PermissionDenied("Regular employees may only update their own account")
+        editable_fields = {"full_name", "email", "department"}
+        if is_admin:
+            editable_fields |= {"username", "role", "account_status"}
+        unexpected = set(data) - editable_fields
+        if unexpected:
+            raise PermissionDenied(f"You cannot update these fields: {', '.join(sorted(unexpected))}")
+        if not data:
+            raise ValidationError("At least one field is required")
+        if "email" in data and not valid_email(data["email"]):
+            raise ValidationError("email must be a valid email address")
+        if "role" in data and data["role"] not in ROLES:
+            raise ValidationError("role is not supported")
+        if "account_status" in data and data["account_status"] not in ACCOUNT_STATUSES:
+            raise ValidationError("account_status is not supported")
+        for field in ("username", "email"):
+            if field in data:
+                duplicate = db.session.query(User.id).filter(
+                    getattr(User, field) == data[field], User.id != user.id
+                ).first()
+                if duplicate:
+                    raise ConflictError(f"{field} is already in use")
+
+        old_role = user.role
+        old_status = user.account_status
+        for field, value in data.items():
+            setattr(user, field, value)
+        try:
+            db.session.commit()
+        except IntegrityError as error:
+            db.session.rollback()
+            raise ConflictError("username or email is already in use") from error
+        log_event(user.id, USER_UPDATED, f"Updated user {user.username}", "Information", "users")
+        if user.role != old_role or user.account_status != old_status:
+            log_event(user.id, ROLE_CHANGED, f"Changed role/status for user {user.username}", "Warning", "users")
+        return self.serialize(user)
 
     @staticmethod
     def serialize(user):

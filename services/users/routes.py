@@ -1,10 +1,11 @@
 """HTTP routes for the users service."""
 
 import jwt
-from flask import Blueprint, request
+from flask import Blueprint, g, request
 
 from common.config import JWT_ALGORITHM, JWT_SECRET
-from common.constants import ADMIN
+from common.constants import ADMIN, EMPLOYEE
+from common.auth import require_roles
 from common.errors import error_response, success_response
 from common.validators import require_fields, require_json_body
 from services.users.service import UsersService
@@ -38,6 +39,15 @@ def login():
     """Author: Haya Karanouh. Authenticate a user and return a JWT."""
     data = require_json_body({"username", "email", "password"})
     return success_response("Login successful", service.login(data))
+
+
+@blueprint.put("/users/<int:user_id>")
+@require_roles(ADMIN, EMPLOYEE)
+def update_user(user_id):
+    """Author: Haya Karanouh. Update an account according to the caller's role."""
+    allowed = {"full_name", "username", "email", "department", "role", "account_status"}
+    data = require_json_body(allowed)
+    return success_response("User updated", service.update(user_id, data, g.user))
 
 
 @blueprint.get("/health")
