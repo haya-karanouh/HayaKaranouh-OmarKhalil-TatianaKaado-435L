@@ -1,0 +1,1 @@
+"""Independent Flask service applications."""
