@@ -47,6 +47,8 @@ def main():
         db.session.commit()
         from database.omar_seed import seed_omar_data
         seed_omar_data()
+        from database.tatiana_seed import seed_tatiana_data
+        seed_tatiana_data()
         print(f"Database ready. {len(USERS)} development users are available.")
 
 
