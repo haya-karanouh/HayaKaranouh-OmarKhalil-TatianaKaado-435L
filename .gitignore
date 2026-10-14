@@ -8,5 +8,6 @@ __pycache__/
 .ruff_cache/
 instance/
 database/*.db
-/evidence/
+/evidence/*
+!/evidence/Haya_Karanouh/
 playwright-report/

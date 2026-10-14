@@ -1,6 +1,6 @@
 # Security Incident Detection and Response Management System
 
-Shared backend foundation for nine independent Flask services. Each service has its own process and port, communicates with peers over HTTP, and uses the same SQLAlchemy models and database. Business endpoints are intentionally not implemented yet; only `GET /health` is available on each service.
+Backend foundation for nine independent Flask services. Each service has its own process and port, communicates with peers over HTTP, and uses the same SQLAlchemy models and database. Users, Audit Logs, and Notifications endpoints are implemented; the other services currently expose only `GET /health`.
 
 ## Requirements
 
@@ -44,7 +44,7 @@ For example, check health with `curl http://127.0.0.1:5001/health`. Responses us
 
 ## Development tokens
 
-The login route is not implemented yet. Mint a two-hour JWT for a seeded active user with:
+Use the real `POST /users/login` route for normal testing. Mint a two-hour JWT for a seeded active user when testing an isolated service with:
 
 ```sh
 python -m scripts.dev_token analyst
@@ -52,12 +52,43 @@ python -m scripts.dev_token analyst
 
 The token is printed to standard output. Suspended users cannot receive a development token. Internal service calls use short-lived tokens with the `Service` role.
 
+## Implemented endpoints
+
+All endpoints use the standard success/error JSON envelopes. Authenticated calls use `Authorization: Bearer <token>`.
+
+Users (`5001`):
+
+- `POST /users/register` and `POST /users/login` are public. Non-admin registrations are always Regular Employee accounts.
+- `GET /users` and `GET /users/{username}` are available to Security Administrators and Auditors. Employees may retrieve only their own username record. The collection supports `?role=`.
+- `PUT /users/{id}` is available to Administrators for any account and employees for their own profile. `DELETE /users/{id}` is Administrator-only and returns 409 if records still reference the account.
+
+Audit Logs (`5005`):
+
+- `POST /logs` is available to Administrators and internal Service tokens.
+- `GET /logs` is available to Administrators and Auditors; `GET /logs/{id}` and `GET /logs/search` also allow Analysts.
+- `GET /logs/user/{user_id}` is available to Administrators and Auditors. `DELETE /logs/{id}` is Administrator-only. Logs cannot be updated; PUT/PATCH return 405.
+- Search filters are `user_id`, `date` (`YYYY-MM-DD`), `action`, `severity`, and `related_service`; supplied filters combine with AND.
+
+Notifications (`5008`):
+
+- `POST /notifications` is available to Administrators and internal Service tokens; recipients are verified through Users.
+- `GET /notifications/user/{user_id}` and `GET /notifications/{id}` allow Administrators/Auditors to access any user and Analysts/Employees to access their own.
+- `PUT /notifications/{id}/read` allows Administrators, Analysts, and Employees, subject to owner checks. `GET /notifications/search` allows Administrators, Analysts, and Auditors. `DELETE /notifications/{id}` is Administrator-only.
+
+The Postman collection is [postman/HayaKaranouh.postman_collection.json](postman/HayaKaranouh.postman_collection.json). Run its Authentication and token setup folder first; it saves JWTs as collection variables. Each implemented endpoint has success, validation, not-found/empty-result, wrong-role, and missing-token examples, with explanations where a category does not apply to a collection or bodyless route.
+
 ## Evidence tooling
 
 With all services running, capture a screenshot of each real health request:
 
 ```sh
 python -m scripts.evidence.self_test "Haya Karanouh"
+```
+
+To reset and seed the database, verify all nine services, and capture the Users, Audit Logs, Notifications, authentication, and Git history scenarios, run:
+
+```sh
+python -m scripts.evidence.haya_karanouh_evidence
 ```
 
 Evidence is written beneath `evidence/<Full_Name_with_underscores>/`; numbered PNGs are accompanied by `captions.md`. `EvidenceRecorder.api` sends a real request before capturing its status, elapsed time, and response. `EvidenceRecorder.db` permits read-only parameterized SQLite queries. `EvidenceRecorder.text` captures supplied command output. No response or query result is synthesized by the recorder.
