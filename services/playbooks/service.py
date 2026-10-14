@@ -9,7 +9,7 @@ from common.errors import ValidationError, NotFoundError, ConflictError
 from common.models import Playbook, ResponseAction
 from common.service_client import call_service, log_event
 from common.validators import require_fields
-from services.incidents.service import INCIDENT_CATEGORIES
+INCIDENT_CATEGORIES = ['Malware', 'Unauthorized Access', 'Phishing', 'Data Leakage', 'Account Compromise', 'Denial of Service', 'Other']
 
 
 class PlaybooksService:
