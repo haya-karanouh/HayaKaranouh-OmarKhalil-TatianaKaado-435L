@@ -45,3 +45,9 @@ def list_vulnerabilities():
 def get(vulnerability_id):
     """Author: Tatiana Kaado. Retrieve a vulnerability and its asset."""
     return success_response("Vulnerability retrieved", service.get(vulnerability_id))
+
+@blueprint.put("/vulnerabilities/<int:vulnerability_id>")
+@require_roles(ADMIN, ANALYST)
+def update(vulnerability_id):
+    """Author: Tatiana Kaado. Update permitted fields and advance status."""
+    return success_response("Vulnerability updated", service.update(vulnerability_id, require_json_body(), g.user))

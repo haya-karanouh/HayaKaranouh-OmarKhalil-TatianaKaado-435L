@@ -117,3 +117,43 @@ class VulnerabilitiesService:
     def get(self, vulnerability_id):
         row = self.find(vulnerability_id)
         return self.serialize(row, self.assets())
+
+    def update(self, vulnerability_id, data, actor):
+        from common.constants import DATA_UPDATED, STATUS_CHANGED
+        row = self.find(vulnerability_id)
+        require_fields(data, set(), {"description", "severity", "status", "cvss_score", "resolved_at"})
+        self.validate(data, row)
+        old_status = row.status
+        new_status = data.get("status", old_status)
+        if new_status != old_status:
+            index = VULNERABILITY_STATUSES.index(old_status)
+            if index == len(VULNERABILITY_STATUSES) - 1 or new_status != VULNERABILITY_STATUSES[index + 1]:
+                raise ValidationError("Status must advance exactly one step: Open -> Under Investigation -> In Progress -> Resolved -> Closed")
+        data = dict(data)
+        if "resolved_at" in data:
+            if new_status not in ("Resolved", "Closed") or not isinstance(data["resolved_at"], str):
+                raise ValidationError("resolved_at requires a resolved vulnerability and an ISO timestamp")
+            try:
+                date = datetime.fromisoformat(data["resolved_at"].replace("Z", "+00:00"))
+                if date.tzinfo:
+                    date = date.astimezone(timezone.utc).replace(tzinfo=None)
+                if not row.created_at <= date <= datetime.utcnow():
+                    raise ValueError()
+            except ValueError:
+                raise ValidationError("resolved_at must be an ISO timestamp between creation and now")
+            data["resolved_at"] = date
+        if new_status == "Resolved" and old_status != "Resolved":
+            data["resolved_at"] = datetime.utcnow()
+        if "cvss_score" in data:
+            data["cvss_score"] = float(data["cvss_score"])
+        assets = self.assets()
+        admins = self.admins() if data.get("severity") == "Critical" and row.severity != "Critical" else []
+        for field, value in data.items():
+            setattr(row, field, value)
+        db.session.commit()
+        log_event(actor["user_id"], DATA_UPDATED, f"Updated vulnerability {row.id}: {sorted(data)}", "Information", "vulnerabilities")
+        if old_status != row.status:
+            log_event(actor["user_id"], STATUS_CHANGED, f"Vulnerability {row.id}: {old_status} -> {row.status}", "Information", "vulnerabilities")
+        for admin in admins:
+            notify(admin["id"], "Critical vulnerability", f"Vulnerability {row.id}: {row.title}", "Vulnerability Alert", "Critical")
+        return self.serialize(row, assets)
