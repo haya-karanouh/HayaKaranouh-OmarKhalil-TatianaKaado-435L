@@ -30,3 +30,10 @@ def create():
 def list_incidents():
     """Author: Omar Khalil. Incidents retrieved."""
     return success_response('Incidents retrieved', {'incidents': service.list(request.args)})
+
+
+@blueprint.get('/incidents/<int:incident_id>')
+@require_roles(ADMIN, ANALYST, AUDITOR, EMPLOYEE)
+def get(incident_id):
+    """Author: Omar Khalil. Incident retrieved."""
+    return success_response('Incident retrieved', service.get(incident_id, g.user))
