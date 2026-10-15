@@ -1,0 +1,140 @@
+- **01_tatiana_kaado_post_threats_adds_ip_address.png**: Tatiana Kaado – POST /threats – Adds IP Address
+  - An IP Address indicator identifies an IPv4 host associated with suspicious activity; the validator rejects malformed octets and IPv6. This example is stored as Low; severity expresses priority, with Low limited, Medium moderate, High urgent and Critical immediate response. Critical creation notifies every administrator through the users and notifications APIs.
+- **02_tatiana_kaado_post_threats_adds_domain.png**: Tatiana Kaado – POST /threats – Adds Domain
+  - A Domain indicator identifies a DNS name associated with suspicious activity; labels are validated and stored in lowercase. This example is stored as Medium; severity expresses priority, with Low limited, Medium moderate, High urgent and Critical immediate response. Critical creation notifies every administrator through the users and notifications APIs.
+- **03_tatiana_kaado_post_threats_adds_file_hash.png**: Tatiana Kaado – POST /threats – Adds File Hash
+  - A File Hash identifies file contents using a hexadecimal MD5, SHA1 or SHA256 digest of 32, 40 or 64 characters. This example is stored as High; severity expresses priority, with Low limited, Medium moderate, High urgent and Critical immediate response. Critical creation notifies every administrator through the users and notifications APIs.
+- **04_tatiana_kaado_post_threats_adds_malware_signatur.png**: Tatiana Kaado – POST /threats – Adds Malware Signature
+  - A Malware Signature stores a non-empty detection signature for matching suspicious content. This example is stored as Critical; severity expresses priority, with Low limited, Medium moderate, High urgent and Critical immediate response. Critical creation notifies every administrator through the users and notifications APIs.
+- **05_tatiana_kaado_post_threats_adds_other.png**: Tatiana Kaado – POST /threats – Adds Other
+  - Other stores a non-empty custom indicator that does not fit the predefined network or file categories. This example is stored as Low; severity expresses priority, with Low limited, Medium moderate, High urgent and Critical immediate response. Critical creation notifies every administrator through the users and notifications APIs.
+- **06_tatiana_kaado_threats_table_shows_persisted_reco.png**: Tatiana Kaado – threats table – Shows persisted records
+  - The type column distinguishes IPv4 hosts, domain names, file digests, malware signatures and custom indicators. Severity is stored separately as a constrained Low, Medium, High or Critical value, so each type can appear at every priority.
+- **07_tatiana_kaado_post_threats_rejects_duplicate_typ.png**: Tatiana Kaado – POST /threats – Rejects duplicate type and value
+  - This request rejects duplicate type and value. The live response verifies HTTP 409 and shows the actual JSON result from the running service.
+- **08_tatiana_kaado_post_threats_rejects_invalid_ip_ad.png**: Tatiana Kaado – POST /threats – Rejects invalid IP Address
+  - This request rejects invalid ip address. The live response verifies HTTP 422 and shows the actual JSON result from the running service.
+- **09_tatiana_kaado_post_threats_rejects_invalid_domai.png**: Tatiana Kaado – POST /threats – Rejects invalid Domain
+  - This request rejects invalid domain. The live response verifies HTTP 422 and shows the actual JSON result from the running service.
+- **10_tatiana_kaado_post_threats_rejects_invalid_file_.png**: Tatiana Kaado – POST /threats – Rejects invalid File Hash
+  - This request rejects invalid file hash. The live response verifies HTTP 422 and shows the actual JSON result from the running service.
+- **11_tatiana_kaado_get_threats_lists_all_threat_indic.png**: Tatiana Kaado – GET /threats – Lists all threat indicators
+  - The response uses the shared status, message and data envelope. data.threats is an array of objects containing the ID, type, value, description, severity, source and ISO date_added timestamp.
+- **12_tatiana_kaado_get_threats_21_retrieves_a_specifi.png**: Tatiana Kaado – GET /threats/21 – Retrieves a specific threat
+  - This request retrieves a specific threat. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **13_tatiana_kaado_get_threats_999999_rejects_a_nonex.png**: Tatiana Kaado – GET /threats/999999 – Rejects a nonexistent ID
+  - This request rejects a nonexistent id. The live response verifies HTTP 404 and shows the actual JSON result from the running service.
+- **14_tatiana_kaado_get_threats_search_searches_by_thr.png**: Tatiana Kaado – GET /threats/search – Searches by threat_type
+  - The threat_type filter selects matching threat indicators. Type, severity and source use equality, value uses a literal partial match, and combined filters use AND.
+- **15_tatiana_kaado_get_threats_search_searches_by_thr.png**: Tatiana Kaado – GET /threats/search – Searches by threat_value
+  - The threat_value filter selects matching threat indicators. Type, severity and source use equality, value uses a literal partial match, and combined filters use AND.
+- **16_tatiana_kaado_get_threats_search_searches_by_sev.png**: Tatiana Kaado – GET /threats/search – Searches by severity
+  - The severity filter selects matching threat indicators. Type, severity and source use equality, value uses a literal partial match, and combined filters use AND.
+- **17_tatiana_kaado_get_threats_search_searches_by_sou.png**: Tatiana Kaado – GET /threats/search – Searches by source
+  - The source filter selects matching threat indicators. Type, severity and source use equality, value uses a literal partial match, and combined filters use AND.
+- **18_tatiana_kaado_get_threats_search_combines_all_fi.png**: Tatiana Kaado – GET /threats/search – Combines all filters with AND
+  - This request combines all filters with and. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **19_tatiana_kaado_get_threats_21_shows_the_threat_be.png**: Tatiana Kaado – GET /threats/21 – Shows the threat before update
+  - This request shows the threat before update. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **20_tatiana_kaado_put_threats_21_updates_allowed_thr.png**: Tatiana Kaado – PUT /threats/21 – Updates allowed threat fields
+  - Only description, severity and source can change; text must be non-empty and severity must use the shared enum. Type and value remain immutable so the indicator identity and duplicate constraint stay consistent.
+- **21_tatiana_kaado_get_threats_21_shows_the_threat_af.png**: Tatiana Kaado – GET /threats/21 – Shows the threat after update
+  - This request shows the threat after update. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **22_tatiana_kaado_put_threats_21_rejects_changing_th.png**: Tatiana Kaado – PUT /threats/21 – Rejects changing the indicator type
+  - This request rejects changing the indicator type. The live response verifies HTTP 422 and shows the actual JSON result from the running service.
+- **23_tatiana_kaado_delete_threats_21_denies_deletion_.png**: Tatiana Kaado – DELETE /threats/21 – Denies deletion by an analyst
+  - This request denies deletion by an analyst. The live response verifies HTTP 403 and shows the actual JSON result from the running service.
+- **24_tatiana_kaado_delete_threats_21_deletes_the_thre.png**: Tatiana Kaado – DELETE /threats/21 – Deletes the threat
+  - This request deletes the threat. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **25_tatiana_kaado_get_threats_denies_employee_access.png**: Tatiana Kaado – GET /threats – Denies employee access
+  - This request denies employee access. The live response verifies HTTP 403 and shows the actual JSON result from the running service.
+- **26_tatiana_kaado_post_vulnerabilities_creates_a_low.png**: Tatiana Kaado – POST /vulnerabilities – Creates a Low finding
+  - CVSS 2.5 maps to Low under the validated score bands. New findings start Open and verify their asset over HTTP; Critical findings send a Vulnerability Alert to every administrator.
+- **27_tatiana_kaado_post_vulnerabilities_creates_a_med.png**: Tatiana Kaado – POST /vulnerabilities – Creates a Medium finding
+  - CVSS 5.5 maps to Medium under the validated score bands. New findings start Open and verify their asset over HTTP; Critical findings send a Vulnerability Alert to every administrator.
+- **28_tatiana_kaado_post_vulnerabilities_creates_a_hig.png**: Tatiana Kaado – POST /vulnerabilities – Creates a High finding
+  - CVSS 8.0 maps to High under the validated score bands. New findings start Open and verify their asset over HTTP; Critical findings send a Vulnerability Alert to every administrator.
+- **29_tatiana_kaado_post_vulnerabilities_creates_a_cri.png**: Tatiana Kaado – POST /vulnerabilities – Creates a Critical finding
+  - CVSS 9.5 maps to Critical under the validated score bands. New findings start Open and verify their asset over HTTP; Critical findings send a Vulnerability Alert to every administrator.
+- **30_tatiana_kaado_vulnerabilities_table_shows_persis.png**: Tatiana Kaado – vulnerabilities table – Shows persisted records
+  - Severity is a constrained string stored independently of the numeric CVSS score, with the API enforcing matching bands: Low below 4, Medium below 7, High below 9 and Critical through 10. The shared enum has no None value, so score zero is represented as Low; status and resolved_at track remediation separately.
+- **31_tatiana_kaado_post_vulnerabilities_rejects_a_mal.png**: Tatiana Kaado – POST /vulnerabilities – Rejects a malformed CVE
+  - This request rejects a malformed cve. The live response verifies HTTP 422 and shows the actual JSON result from the running service.
+- **32_tatiana_kaado_post_vulnerabilities_rejects_cvss_.png**: Tatiana Kaado – POST /vulnerabilities – Rejects CVSS severity mismatch
+  - This request rejects cvss severity mismatch. The live response verifies HTTP 422 and shows the actual JSON result from the running service.
+- **33_tatiana_kaado_get_vulnerabilities_lists_findings.png**: Tatiana Kaado – GET /vulnerabilities – Lists findings with asset name and status
+  - This request lists findings with asset name and status. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **34_tatiana_kaado_get_vulnerabilities_21_retrieves_a.png**: Tatiana Kaado – GET /vulnerabilities/21 – Retrieves a specific finding
+  - This request retrieves a specific finding. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **35_tatiana_kaado_get_vulnerabilities_999999_rejects.png**: Tatiana Kaado – GET /vulnerabilities/999999 – Rejects an unknown finding
+  - This request rejects an unknown finding. The live response verifies HTTP 404 and shows the actual JSON result from the running service.
+- **36_tatiana_kaado_get_vulnerabilities_not_an_id_reje.png**: Tatiana Kaado – GET /vulnerabilities/not-an-id – Rejects a malformed ID
+  - This request rejects a malformed id. The live response verifies HTTP 404 and shows the actual JSON result from the running service.
+- **37_tatiana_kaado_get_vulnerabilities_21_shows_the_f.png**: Tatiana Kaado – GET /vulnerabilities/21 – Shows the finding before update
+  - This request shows the finding before update. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **38_tatiana_kaado_put_vulnerabilities_21_updates_des.png**: Tatiana Kaado – PUT /vulnerabilities/21 – Updates description and matched severity
+  - This request updates description and matched severity. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **39_tatiana_kaado_get_vulnerabilities_21_shows_the_f.png**: Tatiana Kaado – GET /vulnerabilities/21 – Shows the finding after update
+  - This request shows the finding after update. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **40_tatiana_kaado_put_vulnerabilities_21_rejects_a_s.png**: Tatiana Kaado – PUT /vulnerabilities/21 – Rejects a skipped lifecycle step
+  - The service permits only Open to Under Investigation to In Progress to Resolved to Closed. Skipping directly to Closed fails before persistence and leaves the previous status unchanged.
+- **41_tatiana_kaado_put_vulnerabilities_21_advances_to.png**: Tatiana Kaado – PUT /vulnerabilities/21 – Advances to In Progress
+  - Only the next lifecycle step is allowed for administrators and analysts. Entering Resolved automatically sets resolved_at, which is retained when the finding moves to Closed.
+- **42_tatiana_kaado_put_vulnerabilities_21_advances_to.png**: Tatiana Kaado – PUT /vulnerabilities/21 – Advances to Resolved
+  - Only the next lifecycle step is allowed for administrators and analysts. Entering Resolved automatically sets resolved_at, which is retained when the finding moves to Closed.
+- **43_tatiana_kaado_put_vulnerabilities_21_advances_to.png**: Tatiana Kaado – PUT /vulnerabilities/21 – Advances to Closed
+  - Only the next lifecycle step is allowed for administrators and analysts. Entering Resolved automatically sets resolved_at, which is retained when the finding moves to Closed.
+- **44_tatiana_kaado_get_vulnerabilities_search_searche.png**: Tatiana Kaado – GET /vulnerabilities/search – Searches by cve_id
+  - This request searches by cve_id. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **45_tatiana_kaado_get_vulnerabilities_search_searche.png**: Tatiana Kaado – GET /vulnerabilities/search – Searches by severity
+  - This request searches by severity. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **46_tatiana_kaado_get_vulnerabilities_search_searche.png**: Tatiana Kaado – GET /vulnerabilities/search – Searches by asset_id
+  - This request searches by asset_id. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **47_tatiana_kaado_get_vulnerabilities_search_searche.png**: Tatiana Kaado – GET /vulnerabilities/search – Searches by status
+  - This request searches by status. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **48_tatiana_kaado_delete_vulnerabilities_21_denies_a.png**: Tatiana Kaado – DELETE /vulnerabilities/21 – Denies analyst deletion
+  - This request denies analyst deletion. The live response verifies HTTP 403 and shows the actual JSON result from the running service.
+- **49_tatiana_kaado_delete_vulnerabilities_21_deletes_.png**: Tatiana Kaado – DELETE /vulnerabilities/21 – Deletes a finding
+  - This request deletes a finding. The live response verifies HTTP 200 and shows the actual JSON result from the running service.
+- **50_tatiana_kaado_notifications_table_shows_persiste.png**: Tatiana Kaado – notifications table – Shows persisted records
+  - Critical threats and vulnerabilities produce typed notifications addressed to administrators returned by the users API. These rows are actual notifications created by the live requests, not inserted by the evidence script.
+- **51_tatiana_kaado_get_reports_summary_generates_the_.png**: Tatiana Kaado – GET /reports/summary – Generates the summary report
+  - The report aggregates real JSON responses obtained through call_service from the owning services. Its numbers are verified in the next database image; the report's own REPORT_GENERATED event is recorded after data collection.
+- **52_tatiana_kaado_summary_report_verification_proves.png**: Tatiana Kaado – summary report verification – Proves API totals using SQL
+  - COUNT and GROUP BY independently reproduce the API counts, with selected IDs also checking recent and critical lists. For activity and summary, the captured maximum log ID excludes this report's subsequently written audit event; open incidents means all statuses except Resolved and Closed.
+- **53_tatiana_kaado_get_reports_incidents_generates_th.png**: Tatiana Kaado – GET /reports/incidents – Generates the incidents report
+  - The report aggregates real JSON responses obtained through call_service from the owning services. Its numbers are verified in the next database image; the report's own REPORT_GENERATED event is recorded after data collection.
+- **54_tatiana_kaado_incidents_report_verification_prov.png**: Tatiana Kaado – incidents report verification – Proves API totals using SQL
+  - COUNT and GROUP BY independently reproduce the API counts, with selected IDs also checking recent and critical lists. For activity and summary, the captured maximum log ID excludes this report's subsequently written audit event; open incidents means all statuses except Resolved and Closed.
+- **55_tatiana_kaado_get_reports_assets_generates_the_a.png**: Tatiana Kaado – GET /reports/assets – Generates the assets report
+  - The report aggregates real JSON responses obtained through call_service from the owning services. Its numbers are verified in the next database image; the report's own REPORT_GENERATED event is recorded after data collection.
+- **56_tatiana_kaado_assets_report_verification_proves_.png**: Tatiana Kaado – assets report verification – Proves API totals using SQL
+  - COUNT and GROUP BY independently reproduce the API counts, with selected IDs also checking recent and critical lists. For activity and summary, the captured maximum log ID excludes this report's subsequently written audit event; open incidents means all statuses except Resolved and Closed.
+- **57_tatiana_kaado_get_reports_threats_generates_the_.png**: Tatiana Kaado – GET /reports/threats – Generates the threats report
+  - The report aggregates real JSON responses obtained through call_service from the owning services. Its numbers are verified in the next database image; the report's own REPORT_GENERATED event is recorded after data collection.
+- **58_tatiana_kaado_threats_report_verification_proves.png**: Tatiana Kaado – threats report verification – Proves API totals using SQL
+  - COUNT and GROUP BY independently reproduce the API counts, with selected IDs also checking recent and critical lists. For activity and summary, the captured maximum log ID excludes this report's subsequently written audit event; open incidents means all statuses except Resolved and Closed.
+- **59_tatiana_kaado_get_reports_vulnerabilities_genera.png**: Tatiana Kaado – GET /reports/vulnerabilities – Generates the vulnerabilities report
+  - The report aggregates real JSON responses obtained through call_service from the owning services. Its numbers are verified in the next database image; the report's own REPORT_GENERATED event is recorded after data collection.
+- **60_tatiana_kaado_vulnerabilities_report_verificatio.png**: Tatiana Kaado – vulnerabilities report verification – Proves API totals using SQL
+  - COUNT and GROUP BY independently reproduce the API counts, with selected IDs also checking recent and critical lists. For activity and summary, the captured maximum log ID excludes this report's subsequently written audit event; open incidents means all statuses except Resolved and Closed.
+- **61_tatiana_kaado_get_reports_activity_generates_the.png**: Tatiana Kaado – GET /reports/activity – Generates the activity report
+  - The report aggregates real JSON responses obtained through call_service from the owning services. Its numbers are verified in the next database image; the report's own REPORT_GENERATED event is recorded after data collection.
+- **62_tatiana_kaado_activity_report_verification_prove.png**: Tatiana Kaado – activity report verification – Proves API totals using SQL
+  - COUNT and GROUP BY independently reproduce the API counts, with selected IDs also checking recent and critical lists. For activity and summary, the captured maximum log ID excludes this report's subsequently written audit event; open incidents means all statuses except Resolved and Closed.
+- **63_tatiana_kaado_get_reports_summary_denies_an_anal.png**: Tatiana Kaado – GET /reports/summary – Denies an analyst report access
+  - This request denies an analyst report access. The live response verifies HTTP 403 and shows the actual JSON result from the running service.
+- **64_tatiana_kaado_get_reports_summary_denies_an_empl.png**: Tatiana Kaado – GET /reports/summary – Denies an employee report access
+  - This request denies an employee report access. The live response verifies HTTP 403 and shows the actual JSON result from the running service.
+- **65_tatiana_kaado_get_reports_assets_returns_503_whi.png**: Tatiana Kaado – GET /reports/assets – Returns 503 while the assets source is paused
+  - The local assets process is temporarily paused, causing the real HTTP call to time out. The report returns 503 naming the unavailable source, and a finally block resumes the process immediately after capture.
+- **66_tatiana_kaado_get_reports_summary_rejects_a_miss.png**: Tatiana Kaado – GET /reports/summary – Rejects a missing token
+  - This request rejects a missing token. The live response verifies HTTP 401 and shows the actual JSON result from the running service.
+- **67_tatiana_kaado_error_handling_rejects_malformed_j.png**: Tatiana Kaado – Error handling – Rejects malformed JSON
+  - This is an actual HTTP request with incomplete JSON syntax. The local request handler returns the shared JSON error envelope with 400 before business logic executes.
+- **68_tatiana_kaado_get_reports_unknown_returns_404_fo.png**: Tatiana Kaado – GET /reports/unknown – Returns 404 for an unknown route
+  - This request returns 404 for an unknown route. The live response verifies HTTP 404 and shows the actual JSON result from the running service.
+- **69_tatiana_kaado_get_threats_search_treats_sql_inje.png**: Tatiana Kaado – GET /threats/search – Treats SQL injection text as a literal value
+  - SQLAlchemy binds the supplied string as a value and escapes LIKE wildcards. The text does not become SQL syntax, so it returns an empty match instead of exposing all threats.
+- **70_tatiana_kaado_github_history_shows_authored_impl.png**: Tatiana Kaado – GitHub history – Shows authored implementation commits
+  - This is actual Git output filtered by the configured author Tatiana Kaado. The history shows separate endpoint implementation commits along with live validation and supporting artifacts.

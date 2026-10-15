@@ -11,4 +11,5 @@ database/*.db
 /evidence/*
 !/evidence/Haya_Karanouh/
 !/evidence/Omar_Khalil/
+!/evidence/Tatiana_Kaado/
 playwright-report/
