@@ -183,7 +183,7 @@ def endpoint_scenarios():
     }
     user_delete = {
         "Success": {"name": "Success", "token": "admin", "status": 200, "path": "/users/{{postman_user_id}}", "description": "Delete the account created by the registration success request."},
-        "Validation error": {"name": "Validation error / invalid ID syntax", "token": "admin", "status": 404, "path": "/users/not-an-integer", "description": "This bodyless endpoint validates its integer path converter; malformed IDs do not match the route."},
+        "Validation error": {"name": "Validation error / invalid ID syntax", "token": "admin", "status": 405, "path": "/users/not-an-integer", "description": "The malformed ID cannot match the integer delete route. It matches the username lookup route, which permits GET but not DELETE, so Flask returns 405."},
         "Not found": {"name": "Not found", "token": "admin", "status": 404, "path": "/users/999999", "description": "Return 404 for an absent user ID."},
         "Wrong role": {"name": "Wrong role", "token": "analyst", "status": 403, "path": "/users/3", "description": "Analysts cannot delete user accounts."},
         "Missing token": {"name": "Missing token", "token": None, "status": 401, "path": "/users/3", "description": "Reject deletion without a bearer token."},

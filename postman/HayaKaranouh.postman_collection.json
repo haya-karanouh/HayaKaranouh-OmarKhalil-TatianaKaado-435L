@@ -854,7 +854,7 @@
                   }
                 ],
                 "url": "{{users_url}}/users/not-an-integer",
-                "description": "Haya Karanouh \u2013 DELETE /users/3 \u2013 This bodyless endpoint validates its integer path converter; malformed IDs do not match the route."
+                "description": "Haya Karanouh \u2013 DELETE /users/3 \u2013 The malformed ID cannot match the integer delete route. It matches the username lookup route, which permits GET but not DELETE, so Flask returns 405."
               },
               "event": [
                 {
@@ -862,7 +862,7 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });"
+                      "pm.test('HTTP 405', function () { pm.response.to.have.status(405); });"
                     ]
                   }
                 }
